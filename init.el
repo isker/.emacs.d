@@ -1,6 +1,3 @@
-(setq x-select-enable-clipboard t)
-(setq TeX-PDF-mode t)
-
 (require 'package)
 ;; M-x package-list-packages
 ;; i:install
@@ -41,6 +38,7 @@
 			 'auctex
 			 'go-mode
 			 'js2-mode
+       'smart-mode-line
        ))
 
 ;; install all required packages
@@ -71,6 +69,7 @@
 (require 'haskell-mode)
 (require 'go-mode)
 (require 'js2-mode)
+(require 'smart-mode-line)
 
 ;;-------------------------------------------------------------------------------
 ;;; DEFINITIONS
@@ -93,6 +92,9 @@
 ;;; ENVIROMENT CONFIGURATION
 ;;-------------------------------------------------------------------------------
 
+(setq x-select-enable-clipboard t)
+(setq TeX-PDF-mode t)
+
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       backup-by-copying t    ; Don't delink hardlinks
@@ -107,6 +109,18 @@
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 (setq tab-stop-list (number-sequence 4 200 4))   
+
+;; eshell
+(global-set-key (kbd "C-c C-s") 'eshell)
+;; allow . expansion for executing programs
+(defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
+  (setq command (file-truename command)))
+
+;; make eshell autocompletion like bash
+(add-hook
+ 'eshell-mode-hook
+ (lambda ()
+   (setq pcomplete-cycle-completions nil)))
 
 ;; disable startup gnu emacs buffer
 (setq inhibit-startup-message t)  
@@ -195,21 +209,29 @@
 ;;; COSMETICS
 ;;-------------------------------------------------------------------------------
 
+;; Mode line
+(sml/setup)
+(sml/apply-theme 'respectful)
+
+;; Font
+(add-to-list 'default-frame-alist `(font . , "Essential PragmataPro"))
+
+;; Get rid of menu bars
+(menu-bar-mode -1) 
+(toggle-scroll-bar -1) 
+(tool-bar-mode -1) 
+
+;; Oh god the noise
 (setq ring-bell-function 'ignore)
 
 ;; automargin
 (automargin-mode 1)
 (setq automargin-target-width 82)
 
-;; highlight cursor line
-;;(global-hl-line-mode t) 
-
 ;; solarized
-
 ;; Don't change size of org-mode headlines (but keep other size-changes)
 (setq solarized-scale-org-headlines nil)
 (load-theme 'solarized-dark t)
-
 
 ;; show line number in mode line 
 (line-number-mode t)
@@ -226,11 +248,13 @@
  ;; If there is more than one, they won't work right.
  '(background-color "#002b36")
  '(background-mode dark)
+ '(column-number-mode t)
  '(cursor-color "#839496")
  '(custom-safe-themes
-	 (quote
-		("e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+   (quote
+    ("f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(foreground-color "#839496")
+ '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/org/clubs/upe.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
