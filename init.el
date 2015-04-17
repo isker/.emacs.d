@@ -39,6 +39,9 @@
 			 'go-mode
 			 'js2-mode
        'smart-mode-line
+       'helm
+       'helm-projectile
+       'yasnippet
        ))
 
 ;; install all required packages
@@ -70,6 +73,9 @@
 (require 'go-mode)
 (require 'js2-mode)
 (require 'smart-mode-line)
+(require 'helm)
+(require 'helm-config)
+(require 'yasnippet)
 
 ;;-------------------------------------------------------------------------------
 ;;; DEFINITIONS
@@ -92,6 +98,44 @@
 ;;; ENVIROMENT CONFIGURATION
 ;;-------------------------------------------------------------------------------
 
+;; indentation settings
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(setq indent-line-function 'insert-tab)
+;;(setq tab-stop-list (number-sequence 4 200 4))
+
+;; magit
+(setq magit-last-seen-setup-instructions "1.4.0")
+(global-set-key (kbd "C-x m") 'magit-status)
+
+;; yas
+(yas-global-mode 1)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"                                      ;; personal snippets
+        "~/.emacs.d/elpa/yasnippet-20150405.1526/snippets"         ;; the default collection
+        ))
+
+;; expand region
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+;; helm
+(helm-mode 1)
+(helm-autoresize-mode t)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-c h o") 'helm-occur)
+
+;; Allow helm-man-or-woman to use the symbol at point for man pages
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
+
 (setq x-select-enable-clipboard t)
 (setq TeX-PDF-mode t)
 
@@ -104,23 +148,41 @@
       kept-old-versions 5    ; and how many of the old
       )
 
-;; indentation settings
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-(setq indent-line-function 'insert-tab)
-(setq tab-stop-list (number-sequence 4 200 4))   
-
 ;; eshell
-(global-set-key (kbd "C-c C-s") 'eshell)
+(global-set-key (kbd "C-c s") 'eshell)
+
 ;; allow . expansion for executing programs
 (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
   (setq command (file-truename command)))
 
+(autoload 'helm-eshell-history "helm-eshell"    t)
+(autoload 'helm-esh-pcomplete  "helm-eshell"    t)
+(add-hook 'eshell-mode-hook
+          #'(lambda ()
+              (define-key eshell-mode-map
+                [remap eshell-pcomplete]
+                'helm-esh-pcomplete)))
+
+(add-hook 'eshell-mode-hook (lambda()
+                              (yas-minor-mode -1)))
+(add-hook 'eshell-mode-hook (lambda()
+                              (company-mode -1)))
+
 ;; make eshell autocompletion like bash
+;;(add-hook
+;; 'eshell-mode-hook
+;; (lambda ()
+;;   (setq pcomplete-cycle-completions nil)))
+
+;; eshell beginning of line is end of prompt
 (add-hook
  'eshell-mode-hook
- (lambda ()
-   (setq pcomplete-cycle-completions nil)))
+ '(lambda ()
+    (local-set-key (kbd "C-a") 
+                   '(lambda ()
+                      (interactive)
+                      (beginning-of-line)
+                      (search-forward-regexp eshell-prompt-regexp)))))
 
 ;; disable startup gnu emacs buffer
 (setq inhibit-startup-message t)  
@@ -153,6 +215,8 @@
 
 ;; --- projectile mode ---
 (projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
 
 ;; --- auto refresh buffers mode ---
 ;; auto refresh buffers on change
@@ -165,7 +229,7 @@
 
 ;; --- flycheck mode ---
 (add-hook 'after-init-hook #'global-flycheck-mode)
-;;(setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
+(setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
 (setq flycheck-highlighting-mode 'lines)
 
 ;; --- haskell-mode ---
@@ -187,6 +251,9 @@
   (local-set-key (kbd "M-.") 'godef-jump))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
+;; js2-mode
+;;(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
 ;; web mode
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -202,16 +269,12 @@
 (setq erc-autojoin-channels-alist
       '(("irc.zulusquad.org" "#zulu")
         ("irc.rpis.ec" "#rpisec")))
-(erc :server "irc.zulusquad.org" :port 6667 :nick "canned")
-(erc :server "irc.rpis.ec" :port 6667 :nick "canned")
+(erc :server "irc.zulusquad.org" :port 6667 :nick "canned[laptop]")
+(erc :server "irc.rpis.ec" :port 6667 :nick "canned[laptop]")
 
 ;;-------------------------------------------------------------------------------
 ;;; COSMETICS
 ;;-------------------------------------------------------------------------------
-
-;; Mode line
-(sml/setup)
-(sml/apply-theme 'respectful)
 
 ;; Font
 (add-to-list 'default-frame-alist `(font . , "Essential PragmataPro"))
@@ -226,7 +289,7 @@
 
 ;; automargin
 (automargin-mode 1)
-(setq automargin-target-width 82)
+(setq automargin-target-width 100)
 
 ;; solarized
 ;; Don't change size of org-mode headlines (but keep other size-changes)
@@ -249,16 +312,25 @@
  '(background-color "#002b36")
  '(background-mode dark)
  '(column-number-mode t)
+ '(company-global-modes (quote (not eshell-mode)))
  '(cursor-color "#839496")
  '(custom-safe-themes
    (quote
-    ("f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(fill-column 80)
  '(foreground-color "#839496")
+ '(helm-split-window-in-side-p t)
+ '(js-indent-level 2)
  '(menu-bar-mode nil)
- '(org-agenda-files (quote ("~/org/clubs/upe.org"))))
+ '(org-agenda-files (quote ("~/org/clubs/upe.org")))
+ '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; Mode line
+(sml/setup)
+(sml/apply-theme 'respectful)
