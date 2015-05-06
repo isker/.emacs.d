@@ -19,6 +19,7 @@
        'auto-indent-mode
        'company
 			 'company-go
+       'company-jedi
        'expand-region
        'flx-ido
        'highlight-indentation
@@ -54,6 +55,7 @@
 (require 'auto-indent-mode)
 (require 'company-go) 
 (require 'company)
+(require 'company-jedi)
 (require 'expand-region)
 (require 'flx-ido)
 (require 'highlight-indentation)
@@ -66,7 +68,7 @@
 (require 'web-mode)
 (require 'clojure-mode)
 (require 'paredit)
-;; (require 'python-mode)
+(require 'python-mode)
 (require 'magit)
 (require 'automargin)
 (require 'haskell-mode)
@@ -97,6 +99,13 @@
 ;;-------------------------------------------------------------------------------
 ;;; ENVIROMENT CONFIGURATION
 ;;-------------------------------------------------------------------------------
+
+;; full screen on startup
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+;; make splits horizontal
+(setq split-height-threshold nil)
+(setq split-width-threshold 0)
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil)
@@ -195,11 +204,11 @@
 
 ;; company mode
 (add-hook 'after-init-hook 'global-company-mode)
+(push 'company-jedi company-backends)
 (setq company-idle-delay .3)   ; decrease delay before autocompletion popup shows
 (setq company-echo-delay 0)    ; remove annoying blinking
 
 ;; ace-jump-mode
-;; you can select the key you prefer to
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 ;; --- ido mode ---
@@ -219,7 +228,6 @@
 (helm-projectile-on)
 
 ;; --- auto refresh buffers mode ---
-;; auto refresh buffers on change
 (global-auto-revert-mode t)
 
 ;; --- rainbow-delimiters mode ---
@@ -266,9 +274,9 @@
 
 ;; erc
 ;; Autojoin settings
-(setq erc-autojoin-channels-alist
-      '(("irc.zulusquad.org" "#zulu")
-        ("irc.rpis.ec" "#rpisec")))
+;;(setq erc-autojoin-channels-alist
+;;      '(("irc.zulusquad.org" "#zulu")
+;;        ("irc.rpis.ec" "#rpisec")))
 (erc :server "irc.zulusquad.org" :port 6667 :nick "canned[laptop]")
 (erc :server "irc.rpis.ec" :port 6667 :nick "canned[laptop]")
 
@@ -334,3 +342,5 @@
 ;; Mode line
 (sml/setup)
 (sml/apply-theme 'respectful)
+(setq sml/name-width 40)
+(setq sml/mode-width 'full)
