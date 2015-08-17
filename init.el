@@ -1,83 +1,10 @@
 (require 'package)
-;; M-x package-list-packages
-;; i:install
-;; d:delete
-;; u:update
-;; U:update all
-;; x:execute actions
 
 ;; archives
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/") 
 			 ("marmalade" . "http://marmalade-repo.org/packages/")      
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
-
-
-(setq required-packages 
-      (list 
-       'ack-and-a-half
-       'auto-indent-mode
-       'company
-			 'company-go
-       'company-jedi
-       'expand-region
-       'flx-ido
-       'highlight-indentation
-       'move-text
-       'multiple-cursors
-       'projectile
-       'rainbow-delimiters
-       'flycheck
-       'web-mode
-       'clojure-mode
-       'paredit
-       'python-mode
-       'magit
-			 'solarized-theme 
-			 'automargin
-			 'haskell-mode
-			 'auctex
-			 'go-mode
-			 'js2-mode
-       'smart-mode-line
-       'helm
-       'helm-projectile
-       'yasnippet
-       ))
-
-;; install all required packages
-(dolist (package required-packages)
-  (when (not (package-installed-p package))
-    (package-refresh-contents)
-    (package-install package)))
-
-(require 'ack-and-a-half)
-(require 'auto-indent-mode)
-(require 'company-go) 
-(require 'company)
-(require 'company-jedi)
-(require 'expand-region)
-(require 'flx-ido)
-(require 'highlight-indentation)
-(require 'move-text)
-(require 'multiple-cursors)
-(require 'paren)
-(require 'projectile)
-(require 'rainbow-delimiters)
-(require 'cc-mode)
-(require 'web-mode)
-(require 'clojure-mode)
-(require 'paredit)
-(require 'python-mode)
-(require 'magit)
-(require 'automargin)
-(require 'haskell-mode)
-(require 'go-mode)
-(require 'js2-mode)
-(require 'smart-mode-line)
-(require 'helm)
-(require 'helm-config)
-(require 'yasnippet)
 
 ;;-------------------------------------------------------------------------------
 ;;; DEFINITIONS
@@ -100,12 +27,165 @@
 ;;; ENVIROMENT CONFIGURATION
 ;;-------------------------------------------------------------------------------
 
+;; use-package
+(eval-when-compile
+  (require 'use-package))
+(require 'bind-key)                ;; if you use any :bind variant
+
+(use-package ace-window
+  :ensure t)
+(use-package ack-and-a-half
+  :ensure t)
+(use-package auto-indent-mode
+  :ensure t)
+(use-package avy
+  :ensure t)
+(use-package company-go
+  :ensure t)
+(use-package company
+  :ensure t)
+(use-package company-jedi
+  :ensure t)
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+(use-package flx-ido
+  :ensure t)
+(use-package highlight-indentation
+  :ensure t)
+(use-package move-text
+  :ensure t)
+(use-package multiple-cursors
+  :ensure t)
+(use-package paren
+  :ensure t)
+(use-package projectile
+  :ensure t)
+(use-package rainbow-delimiters
+  :ensure t)
+(use-package flycheck
+  :ensure t)
+(use-package cc-mode
+  :ensure t)
+(use-package web-mode
+  :ensure t)
+(use-package clojure-mode
+  :ensure t)
+(use-package paredit
+  :ensure t)
+(use-package python-mode
+  :ensure t)
+(use-package magit
+  :ensure t
+  :init (setq magit-last-seen-setup-instructions "1.4.0")
+  :bind ("C-x m" . magit-status))
+(use-package automargin
+  :ensure t)
+(use-package haskell-mode
+  :ensure t)
+;; (use-package haskell-interactive-mode
+;;   :ensure t)
+;; (use-package haskell-process		
+;;   :ensure t)
+(use-package go-mode
+  :ensure t)
+(use-package js2-mode
+  :ensure t)
+(use-package smart-mode-line
+  :ensure t)
+(use-package helm
+  :ensure t
+  :config
+  (helm-mode 1)
+  (helm-autoresize-mode t)
+  
+  ;; Allow helm-man-or-woman to use the symbol at point for man pages
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+  ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+  ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+  ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+  :bind  
+  ("M-x" . helm-M-x)
+  ("M-y" . helm-show-kill-ring)
+  ("C-x b" . helm-mini)
+  ("C-x C-f" . helm-find-files)
+  ("C-c h o" . helm-occur))
+;; (use-package helm-config		
+;;   :ensure t)
+(use-package yasnippet
+  :ensure t
+  :init
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"                                      ;; personal snippets
+          "~/.emacs.d/elpa/yasnippet-20150405.1526/snippets"         ;; the default collection
+          ))
+  :config
+  (yas-global-mode 1))
+;; (use-package auctex
+;;   :ensure t
+;;   :init
+;;   (setq TeX-PDF-mode t))
+(use-package comment-dwim-2
+  :ensure t
+  :config
+  (define-key global-map [remap comment-dwim] 'comment-dwim-2))
+(use-package eshell
+  :bind
+  ("M-e" . eshell)
+  :config
+  ;; allow . expansion for executing programs
+  (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
+    (setq command (file-truename command)))
+
+  (autoload 'helm-eshell-history "helm-eshell"    t)
+  (autoload 'helm-esh-pcomplete  "helm-eshell"    t)
+  (add-hook 'eshell-mode-hook
+            #'(lambda ()
+                (define-key eshell-mode-map
+                  [remap eshell-pcomplete]
+                  'helm-esh-pcomplete)))
+  (add-hook 'eshell-mode-hook (lambda()
+                                (yas-minor-mode -1)))
+  (add-hook 'eshell-mode-hook (lambda()
+                                (company-mode -1)))
+
+  ;; make eshell autocompletion like bash
+  ;;(add-hook
+  ;; 'eshell-mode-hook
+  ;; (lambda ()
+  ;;   (setq pcomplete-cycle-completions nil)))
+
+  ;; eshell beginning of line is end of prompt
+  (add-hook
+   'eshell-mode-hook
+   '(lambda ()
+      (local-set-key (kbd "C-a") 
+                     '(lambda ()
+                        (interactive)
+                        (beginning-of-line)
+                        (search-forward-regexp eshell-prompt-regexp))))))
+
+(use-package solarized-theme
+  :init
+  ;; Don't change size of org-mode headlines (but keep other size-changes)
+  (setq solarized-scale-org-headlines nil)
+  :config
+  ;; solarized
+  (load-theme 'solarized-dark t)
+)
+
+;; movement
+;;(global-set-key (kbd "C-m") 'back-to-indentation)
+
 ;; full screen on startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; make splits horizontal
 (setq split-height-threshold nil)
-(setq split-width-threshold 0)
+(setq split-width-threshold 800)
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil)
@@ -113,40 +193,7 @@
 (setq indent-line-function 'insert-tab)
 ;;(setq tab-stop-list (number-sequence 4 200 4))
 
-;; magit
-(setq magit-last-seen-setup-instructions "1.4.0")
-(global-set-key (kbd "C-x m") 'magit-status)
-
-;; yas
-(yas-global-mode 1)
-(setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"                                      ;; personal snippets
-        "~/.emacs.d/elpa/yasnippet-20150405.1526/snippets"         ;; the default collection
-        ))
-
-;; expand region
-(global-set-key (kbd "C-=") 'er/expand-region)
-
-;; helm
-(helm-mode 1)
-(helm-autoresize-mode t)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "C-c h o") 'helm-occur)
-
-;; Allow helm-man-or-woman to use the symbol at point for man pages
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
-
 (setq x-select-enable-clipboard t)
-(setq TeX-PDF-mode t)
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
@@ -156,42 +203,6 @@
       kept-new-versions 20   ; how many of the newest versions to keep
       kept-old-versions 5    ; and how many of the old
       )
-
-;; eshell
-(global-set-key (kbd "C-c s") 'eshell)
-
-;; allow . expansion for executing programs
-(defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
-  (setq command (file-truename command)))
-
-(autoload 'helm-eshell-history "helm-eshell"    t)
-(autoload 'helm-esh-pcomplete  "helm-eshell"    t)
-(add-hook 'eshell-mode-hook
-          #'(lambda ()
-              (define-key eshell-mode-map
-                [remap eshell-pcomplete]
-                'helm-esh-pcomplete)))
-
-(add-hook 'eshell-mode-hook (lambda()
-                              (yas-minor-mode -1)))
-(add-hook 'eshell-mode-hook (lambda()
-                              (company-mode -1)))
-
-;; make eshell autocompletion like bash
-;;(add-hook
-;; 'eshell-mode-hook
-;; (lambda ()
-;;   (setq pcomplete-cycle-completions nil)))
-
-;; eshell beginning of line is end of prompt
-(add-hook
- 'eshell-mode-hook
- '(lambda ()
-    (local-set-key (kbd "C-a") 
-                   '(lambda ()
-                      (interactive)
-                      (beginning-of-line)
-                      (search-forward-regexp eshell-prompt-regexp)))))
 
 ;; disable startup gnu emacs buffer
 (setq inhibit-startup-message t)  
@@ -208,8 +219,11 @@
 (setq company-idle-delay .3)   ; decrease delay before autocompletion popup shows
 (setq company-echo-delay 0)    ; remove annoying blinking
 
-;; ace-jump-mode
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+;; avy
+(global-set-key (kbd "M-g w") 'avy-goto-word-1)
+
+;; ace-window
+(global-set-key (kbd "M-p") 'ace-window)
 
 ;; --- ido mode ---
 (ido-mode t)
@@ -241,9 +255,11 @@
 (setq flycheck-highlighting-mode 'lines)
 
 ;; --- haskell-mode ---
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
 
 ;; --- go mode ---
 (defun my-go-mode-hook ()
@@ -277,8 +293,8 @@
 ;;(setq erc-autojoin-channels-alist
 ;;      '(("irc.zulusquad.org" "#zulu")
 ;;        ("irc.rpis.ec" "#rpisec")))
-(erc :server "irc.zulusquad.org" :port 6667 :nick "canned[laptop]")
-(erc :server "irc.rpis.ec" :port 6667 :nick "canned[laptop]")
+;;(erc :server "irc.zulusquad.org" :port 6667 :nick "canned[laptop]")
+;;(erc :server "irc.rpis.ec" :port 6667 :nick "canned[laptop]")
 
 ;;-------------------------------------------------------------------------------
 ;;; COSMETICS
@@ -299,10 +315,6 @@
 (automargin-mode 1)
 (setq automargin-target-width 100)
 
-;; solarized
-;; Don't change size of org-mode headlines (but keep other size-changes)
-(setq solarized-scale-org-headlines nil)
-(load-theme 'solarized-dark t)
 
 ;; show line number in mode line 
 (line-number-mode t)
