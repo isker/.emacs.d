@@ -27,22 +27,37 @@
 ;;; ENVIROMENT CONFIGURATION
 ;;-------------------------------------------------------------------------------
 
+(setq gc-cons-threshold 20000000)
+
 ;; use-package
 (eval-when-compile
   (require 'use-package))
 (require 'bind-key)                ;; if you use any :bind variant
 
 (use-package ace-window
-  :ensure t)
+  :ensure t
+  :bind
+  ("M-j" . ace-window))
 (use-package ack-and-a-half
   :ensure t)
 (use-package auto-indent-mode
   :ensure t)
 (use-package avy
-  :ensure t)
-(use-package company-go
-  :ensure t)
+  :ensure t
+  :bind
+  ("M-g w" . avy-goto-word-1))
 (use-package company
+  :ensure t
+  :init
+  (add-hook 'after-init-hook 'global-company-mode)
+  ;; decrease delay before autocompletion popup shows
+  (setq company-idle-delay .3)
+  ;; remove annoying blinking
+  (setq company-echo-delay 0)
+  :config
+  (push 'company-jedi company-backends)
+  )
+(use-package company-go
   :ensure t)
 (use-package company-jedi
   :ensure t)
@@ -60,37 +75,98 @@
 (use-package paren
   :ensure t)
 (use-package projectile
-  :ensure t)
+  :ensure t
+  :init 
+  (projectile-global-mode)
+  (setq projectile-completion-system 'helm)
+  (helm-projectile-on))
 (use-package rainbow-delimiters
-  :ensure t)
+  :ensure t
+  :init  
+  ;;(global-rainbow-delimiters-mode)
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'latex-mode-hook 'rainbow-delimiters-mode))
 (use-package flycheck
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
+  (setq flycheck-highlighting-mode 'lines))
 (use-package cc-mode
   :ensure t)
 (use-package web-mode
-  :ensure t)
+  :ensure t
+  :mode
+  "\\.html?\\'"
+  "\\.phtml\\'"
+  "\\.tpl\\.php\\'"
+  "\\.jsp\\'"
+  "\\.as[cp]x\\'"
+  "\\.erb\\'"
+  "\\.mustache\\'"
+  "\\.djhtml\\'"
+  )
 (use-package clojure-mode
   :ensure t)
 (use-package paredit
   :ensure t)
-(use-package python-mode
-  :ensure t)
+;; The package is "python" but the mode is "python-mode"
+(use-package python
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode)
+  :init (add-hook 'python-mode-hook (lambda()
+                                      (run-python "python"))))
 (use-package magit
   :ensure t
-  :init (setq magit-last-seen-setup-instructions "1.4.0")
   :bind ("C-x m" . magit-status))
 (use-package automargin
-  :ensure t)
+  :ensure t
+  :init
+  (setq automargin-target-width 100)
+  :config
+  (automargin-mode 1))
 (use-package haskell-mode
-  :ensure t)
+  :ensure t
+  :init
+  ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+  ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+  (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
 ;; (use-package haskell-interactive-mode
 ;;   :ensure t)
 ;; (use-package haskell-process		
 ;;   :ensure t)
 (use-package go-mode
-  :ensure t)
+  :ensure t
+  :init
+  (defun my-go-mode-hook ()
+    ;; Use goimports instead of go-fmt
+    (setq gofmt-command "goimports")
+    ;; Call Gofmt before saving
+    (add-hook 'before-save-hook 'gofmt-before-save)
+    ;; Customize compile command to run go build
+    (if (not (string-match "go" compile-command))
+        (set (make-local-variable 'compile-command)
+             "go build -v && go test -v && go vet"))
+    ;; Godef jump key binding
+    (local-set-key (kbd "M-.") 'godef-jump))
+  (add-hook 'go-mode-hook 'my-go-mode-hook)
+
+  ;; autocompletion
+  (add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-go))
+                            (company-mode)))
+  )
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+  (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
+  :config
+  (exec-path-from-shell-initialize)
+  )
 (use-package js2-mode
-  :ensure t)
+  :ensure t
+  :mode "\\.js\\'")
 (use-package smart-mode-line
   :ensure t)
 (use-package helm
@@ -112,7 +188,9 @@
   ("M-y" . helm-show-kill-ring)
   ("C-x b" . helm-mini)
   ("C-x C-f" . helm-find-files)
-  ("C-c h o" . helm-occur))
+  ;; TODO: Why doesn't this work?
+  ;;("C-c h o" . helm-occur)
+  )
 ;; (use-package helm-config		
 ;;   :ensure t)
 (use-package yasnippet
@@ -121,6 +199,7 @@
   (setq yas-snippet-dirs
         '("~/.emacs.d/snippets"                                      ;; personal snippets
           "~/.emacs.d/elpa/yasnippet-20150405.1526/snippets"         ;; the default collection
+          "~/.emacs.d/snippets/yasnippet-go"
           ))
   :config
   (yas-global-mode 1))
@@ -136,6 +215,7 @@
   :bind
   ("M-e" . eshell)
   :config
+  
   ;; allow . expansion for executing programs
   (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
     (setq command (file-truename command)))
@@ -170,15 +250,30 @@
 
 (use-package solarized-theme
   :init
-  ;; Don't change size of org-mode headlines (but keep other size-changes)
+  ;; Make org-mode headlines like all other org text
   (setq solarized-scale-org-headlines nil)
+  (setq solarized-use-variable-pitch nil)
   :config
   ;; solarized
   (load-theme 'solarized-dark t)
-)
+  )
+
+(use-package ws-butler
+  :ensure t)
+
+(use-package org
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (set-fill-column 90)))
+  ;:bind
+  ;("M-q" . toggle-truncate-lines)
+  )
 
 ;; movement
 ;;(global-set-key (kbd "C-m") 'back-to-indentation)
+(windmove-default-keybindings)
 
 ;; full screen on startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -213,18 +308,6 @@
 ;; delete current selection when characters typed
 (delete-selection-mode t)
 
-;; company mode
-(add-hook 'after-init-hook 'global-company-mode)
-(push 'company-jedi company-backends)
-(setq company-idle-delay .3)   ; decrease delay before autocompletion popup shows
-(setq company-echo-delay 0)    ; remove annoying blinking
-
-;; avy
-(global-set-key (kbd "M-g w") 'avy-goto-word-1)
-
-;; ace-window
-(global-set-key (kbd "M-p") 'ace-window)
-
 ;; --- ido mode ---
 (ido-mode t)
 (setq ido-everywhere t)
@@ -236,57 +319,8 @@
 ;; disable ido faces to use flx highlighting
 (setq ido-use-faces nil)
 
-;; --- projectile mode ---
-(projectile-global-mode)
-(setq projectile-completion-system 'helm)
-(helm-projectile-on)
-
 ;; --- auto refresh buffers mode ---
 (global-auto-revert-mode t)
-
-;; --- rainbow-delimiters mode ---
-;;(global-rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'latex-mode-hook 'rainbow-delimiters-mode)
-
-;; --- flycheck mode ---
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
-(setq flycheck-highlighting-mode 'lines)
-
-;; --- haskell-mode ---
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-
-
-;; --- go mode ---
-(defun my-go-mode-hook ()
-  ; Use goimports instead of go-fmt
-  (setq gofmt-command "goimports")
-  ; Call Gofmt before saving
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  ; Customize compile command to run go build
-  (if (not (string-match "go" compile-command))
-      (set (make-local-variable 'compile-command)
-           "go build -v && go test -v && go vet"))
-  ; Godef jump key binding
-  (local-set-key (kbd "M-.") 'godef-jump))
-(add-hook 'go-mode-hook 'my-go-mode-hook)
-
-;; js2-mode
-;;(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-
-;; web mode
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))              
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
 ;; erc
 ;; Autojoin settings
@@ -310,11 +344,6 @@
 
 ;; Oh god the noise
 (setq ring-bell-function 'ignore)
-
-;; automargin
-(automargin-mode 1)
-(setq automargin-target-width 100)
-
 
 ;; show line number in mode line 
 (line-number-mode t)
@@ -343,6 +372,7 @@
  '(js-indent-level 2)
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/org/clubs/upe.org")))
+ '(org-special-ctrl-a/e t)
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
