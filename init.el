@@ -38,10 +38,8 @@
   :ensure t
   :bind
   ("M-j" . ace-window))
-(use-package ack-and-a-half
-  :ensure t)
-(use-package auto-indent-mode
-  :ensure t)
+;; (use-package auto-indent-mode
+;;   :ensure t)
 (use-package avy
   :ensure t
   :bind
@@ -64,22 +62,16 @@
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
-(use-package flx-ido
-  :ensure t)
-(use-package highlight-indentation
-  :ensure t)
-(use-package move-text
-  :ensure t)
 (use-package multiple-cursors
-  :ensure t)
-(use-package paren
-  :ensure t)
+  :ensure t
+  :bind("C--" . mc/mark-next-like-this))
 (use-package projectile
   :ensure t
   :init 
   (projectile-global-mode)
   (setq projectile-completion-system 'helm)
-  (helm-projectile-on))
+  ;; (helm-projectile-on)
+  )
 (use-package rainbow-delimiters
   :ensure t
   :init  
@@ -132,10 +124,6 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
   ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
-;; (use-package haskell-interactive-mode
-;;   :ensure t)
-;; (use-package haskell-process		
-;;   :ensure t)
 (use-package go-mode
   :ensure t
   :init
@@ -167,8 +155,6 @@
 (use-package js2-mode
   :ensure t
   :mode "\\.js\\'")
-(use-package smart-mode-line
-  :ensure t)
 (use-package helm
   :ensure t
   :config
@@ -255,9 +241,10 @@
   (setq solarized-use-variable-pitch nil)
   :config
   ;; solarized
+  ;; (if (display-graphic-p)
+  ;;     (load-theme 'solarized-dark t))
   (load-theme 'solarized-dark t)
   )
-
 (use-package ws-butler
   :ensure t)
 
@@ -308,27 +295,8 @@
 ;; delete current selection when characters typed
 (delete-selection-mode t)
 
-;; --- ido mode ---
-(ido-mode t)
-(setq ido-everywhere t)
-
-;; --- flx mode ---
-;; flx ido fuzzy matching
-(flx-ido-mode t)
-
-;; disable ido faces to use flx highlighting
-(setq ido-use-faces nil)
-
 ;; --- auto refresh buffers mode ---
 (global-auto-revert-mode t)
-
-;; erc
-;; Autojoin settings
-;;(setq erc-autojoin-channels-alist
-;;      '(("irc.zulusquad.org" "#zulu")
-;;        ("irc.rpis.ec" "#rpisec")))
-;;(erc :server "irc.zulusquad.org" :port 6667 :nick "canned[laptop]")
-;;(erc :server "irc.rpis.ec" :port 6667 :nick "canned[laptop]")
 
 ;;-------------------------------------------------------------------------------
 ;;; COSMETICS
@@ -353,21 +321,19 @@
 
 ;; disable menu bar
 (menu-bar-mode -1) 
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(background-color "#002b36")
- '(background-mode dark)
  '(column-number-mode t)
  '(company-global-modes (quote (not eshell-mode)))
- '(cursor-color "#839496")
  '(custom-safe-themes
    (quote
     ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(fill-column 80)
- '(foreground-color "#839496")
  '(helm-split-window-in-side-p t)
  '(js-indent-level 2)
  '(menu-bar-mode nil)
@@ -381,8 +347,13 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; Mode line
-(sml/setup)
-(sml/apply-theme 'respectful)
-(setq sml/name-width 40)
-(setq sml/mode-width 'full)
+;; Put this after custom-safe-themes so that it stops complaining about
+;; untrusted color themes.
+(use-package smart-mode-line
+  :ensure t
+  :config
+  (sml/apply-theme 'respectful)
+  :init
+  (sml/setup)
+  (setq sml/name-width 40)
+  (setq sml/mode-width 'full))
