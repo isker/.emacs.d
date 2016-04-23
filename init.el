@@ -235,6 +235,7 @@
                         (search-forward-regexp eshell-prompt-regexp))))))
 
 (use-package solarized-theme
+  :ensure solarized-theme
   :init
   ;; Make org-mode headlines like all other org text
   (setq solarized-scale-org-headlines nil)
