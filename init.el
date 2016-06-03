@@ -28,6 +28,7 @@
 ;;-------------------------------------------------------------------------------
 
 (setq gc-cons-threshold 20000000)
+(setq create-lockfiles nil)
 
 ;; use-package
 (eval-when-compile
@@ -234,18 +235,30 @@
                         (beginning-of-line)
                         (search-forward-regexp eshell-prompt-regexp))))))
 
-(use-package solarized-theme
-  :ensure solarized-theme
-  :init
-  ;; Make org-mode headlines like all other org text
-  (setq solarized-scale-org-headlines nil)
-  (setq solarized-use-variable-pitch nil)
-  :config
-  ;; solarized
-  ;; (if (display-graphic-p)
-  ;;     (load-theme 'solarized-dark t))
-  (load-theme 'solarized-dark t)
-  )
+(load-theme 'solarized t)
+(setq frame-background-mode 'dark)
+(set-terminal-parameter nil 'background-mode 'dark)
+
+;; (use-package solarized-theme
+;;   :ensure solarized-theme
+;;   :init
+;;   ;; Make org-mode headlines like all other org text
+;;   (setq solarized-scale-org-headlines nil)
+;;   (setq solarized-use-variable-pitch nil)
+;;   :config
+;;   ;; solarized
+;;   ;; (if (display-graphic-p)
+;;   ;;     (load-theme 'solarized-dark t))
+;;   (load-theme 'solarized-dark t)
+;;   )
+
+;; (use-package color-theme-solarized
+;;   :ensure t
+;;   :init
+;;   :config
+;;   )
+
+
 (use-package ws-butler
   :ensure t)
 
@@ -304,7 +317,7 @@
 ;;-------------------------------------------------------------------------------
 
 ;; Font
-(add-to-list 'default-frame-alist `(font . , "Essential PragmataPro"))
+(add-to-list 'default-frame-alist `(font . , "PragmataPro"))
 
 ;; Get rid of menu bars
 (menu-bar-mode -1) 
