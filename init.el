@@ -101,7 +101,10 @@
 (use-package clojure-mode
   :ensure t)
 (use-package paredit
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook clojure-mode-hook 'enable-paredit-mode)
+  (add-hook emacs-lisp-mode-hook 'enable-paredit-mode))
 ;; The package is "python" but the mode is "python-mode"
 (use-package python
   :mode ("\\.py\\'" . python-mode)
