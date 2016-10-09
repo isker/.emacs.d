@@ -102,9 +102,7 @@
   :ensure t)
 (use-package paredit
   :ensure t
-  :init
-  (add-hook clojure-mode-hook 'enable-paredit-mode)
-  (add-hook emacs-lisp-mode-hook 'enable-paredit-mode))
+  :init)
 ;; The package is "python" but the mode is "python-mode"
 (use-package python
   :mode ("\\.py\\'" . python-mode)
@@ -259,6 +257,37 @@
               (set-fill-column 90)))
   ;:bind
   ;("M-q" . toggle-truncate-lines)
+  )
+
+(use-package rust-mode
+  :ensure t
+  :mode "\\.rs\\'"
+  :init
+  (add-hook 'rust-mode-hook #'racer-mode)
+  )
+
+(use-package racer
+  :ensure t
+  :init
+  (setq racer-rust-src-path "/usr/local/src/rustc-1.10.0/src")
+  (setq racer-cmd "/home/ian/.cargo/bin/racer")
+  ;; (add-hook 'racer-mode-hook #'eldoc-mode)
+  )
+
+(use-package company-racer
+  :ensure t
+  :init
+  (add-hook 'racer-mode-hook #'company-mode))
+
+(use-package flycheck-rust
+  :ensure t
+  :init
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+(use-package cargo
+  :ensure t
+  :init
+  (add-hook 'rust-mode-hook #'cargo-minor-mode)
   )
 
 ;; movement
