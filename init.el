@@ -53,12 +53,12 @@
   ;; remove annoying blinking
   (setq company-echo-delay 0)
   :config
-  (push 'company-jedi company-backends)
+  ;; (push 'company-jedi company-backends)
   )
 (use-package company-go
   :ensure t)
-(use-package company-jedi
-  :ensure t)
+;; (use-package company-jedi
+;;   :ensure t)
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
@@ -97,6 +97,10 @@
   "\\.erb\\'"
   "\\.mustache\\'"
   "\\.djhtml\\'"
+  "\\.vm\\'"
+  "\\.jsx\\'"
+  :init
+  (setq web-mode-script-padding 2)
   )
 (use-package clojure-mode
   :ensure t)
@@ -111,13 +115,16 @@
                                       (run-python "python"))))
 (use-package magit
   :ensure t
-  :bind ("C-x m" . magit-status))
-(use-package automargin
-  :ensure t
+  :bind ("C-x m" . magit-status)
   :init
-  (setq automargin-target-width 100)
-  :config
-  (automargin-mode 1))
+  (setq vc-handled-backends nil)
+  (setq magit-refresh-status-buffer nil))
+;; (use-package automargin
+;;   :ensure t
+;;   :init
+;;   (setq automargin-target-width 100)
+;;   :config
+;;   (automargin-mode 1))
 (use-package haskell-mode
   :ensure t
   :init
