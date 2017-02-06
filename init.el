@@ -276,8 +276,6 @@
 (use-package racer
   :ensure t
   :init
-  (setq racer-rust-src-path "/usr/local/src/rustc-1.10.0/src")
-  (setq racer-cmd "/home/ian/.cargo/bin/racer")
   ;; (add-hook 'racer-mode-hook #'eldoc-mode)
   )
 
@@ -296,6 +294,9 @@
   :init
   (add-hook 'rust-mode-hook #'cargo-minor-mode)
   )
+
+(use-package multi-term
+  :ensure t)
 
 ;; movement
 ;;(global-set-key (kbd "C-m") 'back-to-indentation)
@@ -378,6 +379,9 @@
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/org/clubs/upe.org")))
  '(org-special-ctrl-a/e t)
+ '(package-selected-packages
+   (quote
+    (multi-term cargo flycheck-rust company-racer racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode helm haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
