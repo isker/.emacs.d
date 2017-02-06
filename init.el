@@ -296,7 +296,27 @@
   )
 
 (use-package multi-term
-  :ensure t)
+  :ensure t
+  :init
+  (defun term-send-kill-line ()
+    "Kill line in term mode."
+    (interactive)
+    (call-interactively 'kill-line)
+    (term-send-raw-string "\C-k"))
+  (defun term-send-yank ()
+    "Yank in term mode."
+    (interactive)
+    (yank)
+    (term-send-raw-string (current-kill 0)))
+  :config
+  (setq multi-term-program "/bin/zsh")
+  (add-hook 'term-mode-hook
+          (lambda ()
+            (add-to-list 'term-bind-key-alist '("M-[" . multi-term-prev))
+            (add-to-list 'term-bind-key-alist '("M-]" . multi-term-next))
+            (add-to-list 'term-bind-key-alist '("C-k" . term-send-kill-line))
+            (add-to-list 'term-bind-key-alist '("C-y" . term-send-yank))
+            (yas-minor-mode -1))))
 
 ;; movement
 ;;(global-set-key (kbd "C-m") 'back-to-indentation)
