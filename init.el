@@ -312,8 +312,8 @@
   (setq multi-term-program "/bin/zsh")
   (add-hook 'term-mode-hook
           (lambda ()
-            (add-to-list 'term-bind-key-alist '("M-[" . multi-term-prev))
-            (add-to-list 'term-bind-key-alist '("M-]" . multi-term-next))
+            (add-to-list 'term-bind-key-alist '("M-{" . multi-term-prev))
+            (add-to-list 'term-bind-key-alist '("M-}" . multi-term-next))
             (add-to-list 'term-bind-key-alist '("C-k" . term-send-kill-line))
             (add-to-list 'term-bind-key-alist '("C-y" . term-send-yank))
             (yas-minor-mode -1))))
