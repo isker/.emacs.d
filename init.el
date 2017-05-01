@@ -59,6 +59,38 @@
   :ensure t)
 ;; (use-package company-jedi
 ;;   :ensure t)
+(use-package dired
+  :init
+  (defun ora-dired-rsync (dest)
+    (interactive
+     (list
+      (expand-file-name
+       (read-file-name
+        "Rsync to:"
+        (dired-dwim-target-directory)))))
+    ;; store all selected files into "files" list
+    (let ((files (dired-get-marked-files
+                  nil current-prefix-arg))
+          ;; the rsync command
+          (tmtxt/rsync-command
+           "rsync -arvz --progress "))
+      ;; add all selected file names as arguments
+      ;; to the rsync command
+      (dolist (file files)
+        (setq tmtxt/rsync-command
+              (concat tmtxt/rsync-command
+                      (shell-quote-argument file)
+                      " ")))
+      ;; append the destination
+      (setq tmtxt/rsync-command
+            (concat tmtxt/rsync-command
+                    (shell-quote-argument dest)))
+      ;; run the async shell command
+      (async-shell-command tmtxt/rsync-command "*rsync*")
+      ;; finally, switch to that window
+      (other-window 1)))
+
+  (define-key dired-mode-map "Y" 'ora-dired-rsync))
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
@@ -357,6 +389,9 @@
 
 ;; --- auto refresh buffers mode ---
 (global-auto-revert-mode t)
+
+;; enable y/n answers
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;;-------------------------------------------------------------------------------
 ;;; COSMETICS
