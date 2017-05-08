@@ -50,6 +50,7 @@
   (add-hook 'after-init-hook 'global-company-mode)
   ;; decrease delay before autocompletion popup shows
   (setq company-idle-delay .3)
+  (setq company-tooltip-align-annotations t)
   ;; remove annoying blinking
   (setq company-echo-delay 0)
   :config
@@ -195,6 +196,8 @@
 (use-package js2-mode
   :ensure t
   :mode "\\.js\\'")
+(use-package json-mode
+  :ensure t)
 (use-package helm
   :ensure t
   :config
@@ -303,18 +306,15 @@
   :mode "\\.rs\\'"
   :init
   (add-hook 'rust-mode-hook #'racer-mode)
+  (setq rust-format-on-save t)
   )
 
 (use-package racer
   :ensure t
   :init
-  ;; (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode)
   )
-
-(use-package company-racer
-  :ensure t
-  :init
-  (add-hook 'racer-mode-hook #'company-mode))
 
 (use-package flycheck-rust
   :ensure t
@@ -436,7 +436,7 @@
  '(org-special-ctrl-a/e t)
  '(package-selected-packages
    (quote
-    (multi-term cargo flycheck-rust company-racer racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode helm haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
+    (json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode helm haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
