@@ -2,7 +2,6 @@
 
 ;; archives
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/") 
-			 ("marmalade" . "http://marmalade-repo.org/packages/")      
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
@@ -89,9 +88,7 @@
       ;; run the async shell command
       (async-shell-command tmtxt/rsync-command "*rsync*")
       ;; finally, switch to that window
-      (other-window 1)))
-
-  (define-key dired-mode-map "Y" 'ora-dired-rsync))
+      (other-window 1))))
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
@@ -102,8 +99,6 @@
   :ensure t
   :init 
   (projectile-global-mode)
-  (setq projectile-completion-system 'helm)
-  ;; (helm-projectile-on)
   )
 (use-package rainbow-delimiters
   :ensure t
@@ -198,30 +193,21 @@
   :mode "\\.js\\'")
 (use-package json-mode
   :ensure t)
-(use-package helm
+(use-package ivy
   :ensure t
-  :config
-  (helm-mode 1)
-  (helm-autoresize-mode t)
-  
-  ;; Allow helm-man-or-woman to use the symbol at point for man pages
-  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-  ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-  ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-  ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-  (global-set-key (kbd "C-c h") 'helm-command-prefix)
-  (global-unset-key (kbd "C-x c"))
-  :bind  
-  ("M-x" . helm-M-x)
-  ("M-y" . helm-show-kill-ring)
-  ("C-x b" . helm-mini)
-  ("C-x C-f" . helm-find-files)
-  ;; TODO: Why doesn't this work?
-  ;;("C-c h o" . helm-occur)
+  :init
+  (setq ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
   )
-;; (use-package helm-config		
-;;   :ensure t)
+(use-package swiper
+  :ensure t
+  :bind ("C-s" . swiper)
+)
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("C-l" . counsel-up-directory)))
 (use-package yasnippet
   :ensure t
   :init
@@ -249,13 +235,6 @@
   (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
     (setq command (file-truename command)))
 
-  (autoload 'helm-eshell-history "helm-eshell"    t)
-  (autoload 'helm-esh-pcomplete  "helm-eshell"    t)
-  (add-hook 'eshell-mode-hook
-            #'(lambda ()
-                (define-key eshell-mode-map
-                  [remap eshell-pcomplete]
-                  'helm-esh-pcomplete)))
   (add-hook 'eshell-mode-hook (lambda()
                                 (yas-minor-mode -1)))
   (add-hook 'eshell-mode-hook (lambda()
@@ -429,14 +408,13 @@
    (quote
     ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(fill-column 80)
- '(helm-split-window-in-side-p t)
  '(js-indent-level 2)
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/org/clubs/upe.org")))
  '(org-special-ctrl-a/e t)
  '(package-selected-packages
    (quote
-    (json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode helm haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
+    (json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
