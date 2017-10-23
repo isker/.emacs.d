@@ -209,8 +209,10 @@
   :ensure t
   :init
   (setq ivy-mode 1)
+  ;; ivy claims to do this for you but I've had no such luck.
+  (setq completing-read-function 'ivy-completing-read)
   (setq ivy-use-virtual-buffers t)
-  (setq magit-completing-read-function 'ivy-completing-read))
+  (setq ivy-extra-directories nil))
 (use-package swiper
   :ensure t
   :bind ("C-s" . swiper))
