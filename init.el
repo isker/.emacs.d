@@ -351,7 +351,7 @@
 
 ;; make splits horizontal
 (setq split-height-threshold nil)
-(setq split-width-threshold 800)
+(setq split-width-threshold 0)
 
 ;; indentation settings
 (setq-default indent-tabs-mode nil)
