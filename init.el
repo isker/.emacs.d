@@ -218,6 +218,8 @@
   :bind ("C-s" . swiper))
 (use-package counsel
   :ensure t
+  :init
+  (setq counsel-find-file-at-point t)
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
          ("C-l" . counsel-up-directory)))
