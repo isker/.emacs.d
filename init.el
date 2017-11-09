@@ -295,6 +295,12 @@
   ;("M-q" . toggle-truncate-lines)
   )
 
+(use-package dumb-jump
+  :ensure t
+  :init
+  (dumb-jump-mode)
+  (setq dumb-jump-force-searcher 'rg))
+
 (use-package rust-mode
   :ensure t
   :mode "\\.rs\\'"
@@ -324,6 +330,7 @@
 (use-package multi-term
   :ensure t
   :init
+  (setq term-buffer-maximum-size 100000)
   (defun term-send-kill-line ()
     "Kill line in term mode."
     (interactive)
