@@ -213,9 +213,6 @@
   (setq completing-read-function 'ivy-completing-read)
   (setq ivy-use-virtual-buffers t)
   (setq ivy-extra-directories nil))
-(use-package swiper
-  :ensure t
-  :bind ("C-s" . swiper))
 (use-package counsel
   :ensure t
   :init
