@@ -323,7 +323,9 @@
   :init
   (add-hook 'rust-mode-hook #'cargo-minor-mode)
   )
-
+(use-package ediff
+  :init
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain))
 (use-package multi-term
   :ensure t
   :init
@@ -391,6 +393,10 @@
 ;; enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+(setq mouse-yank-at-point t)
+
 ;;-------------------------------------------------------------------------------
 ;;; COSMETICS
 ;;-------------------------------------------------------------------------------
@@ -415,6 +421,8 @@
 ;; disable menu bar
 (menu-bar-mode -1) 
 
+(setq initial-scratch-message nil)
+(setq initial-major-mode 'fundamental-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
