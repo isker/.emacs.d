@@ -329,7 +329,7 @@
 (use-package multi-term
   :ensure t
   :init
-  (setq term-buffer-maximum-size 100000)
+  (setq term-buffer-maximum-size 25000)
   (defun term-send-kill-line ()
     "Kill line in term mode."
     (interactive)
