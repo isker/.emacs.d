@@ -272,10 +272,9 @@
   :ensure t
   :init
   (setq color-themes `())
-  (load-theme 'solarized t)
   (setq frame-background-mode 'dark)
   (set-terminal-parameter nil 'background-mode 'dark)
-  (setq solarized-termcolors 256)
+  (load-theme 'solarized t)
   :config
   )
 
