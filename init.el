@@ -144,6 +144,13 @@
   :ensure t
   :init
   (add-hook 'cider-repl-mode-hook #'eldoc-mode))
+(use-package helpful
+  :ensure t
+  :config
+  (defalias 'describe-key 'helpful-key)
+  (defalias 'describe-function 'helpful-callable)
+  (defalias 'describe-variable 'helpful-variable)
+  (defalias 'describe-symbol 'helpful-symbol))
 (use-package paredit
   :ensure t
   :init)
@@ -440,7 +447,7 @@
  '(org-special-ctrl-a/e t)
  '(package-selected-packages
    (quote
-    (json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
+    (helpful json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
