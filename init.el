@@ -336,28 +336,98 @@
   :ensure t
   :init
   (setq term-buffer-maximum-size 25000)
-  (defun term-send-kill-line ()
-    "Kill line in term mode."
+  ;; Most of these multi-term funs stolen from
+  ;; https://github.com/aborn/multi-term-plus/blob/master/multi-term-plus.el
+  ;; I've added more myself and made the preexisting ones less bad
+  (defun multi-term-is-at-end-line ()
+    (equal (line-number-at-pos) (count-lines (point-min) (point-max))))
+  (defun multi-term-backward-char ()
+    "Backward-char in term-mode. "
     (interactive)
-    (call-interactively 'kill-line)
-    (term-send-raw-string "\C-k"))
+    (if (not (multi-term-is-at-end-line))
+        (backward-char)
+      (term-send-left)))
+  (defun multi-term-forward-char ()
+    "Forward-char in term-mode."
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (forward-char)
+      (term-send-right)))
+  (defun multi-term-backward-word ()
+    "Backward-word in term-mode. "
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (backward-word)
+      (term-send-backward-word)))
+  (defun multi-term-forward-word ()
+    "Forward-word in term-mode."
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (forward-word)
+      (term-send-right)))
+  (defun multi-term-move-beginning-of-line ()
+    "Smart version of move-beginning-of-line in term-mode."
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (beginning-of-line)
+      (term-send-raw)))
+  (defun multi-term-move-end-of-line ()
+    "Smart version of move-end-of-line in term-mode."
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (move-end-of-line nil)
+      (term-send-raw-string "\C-e")))
+  (defun multi-term-kill-line ()
+    "Smart kill-line in multi-term mode."
+    (interactive)
+    (if (multi-term-is-at-end-line)
+        (term-send-raw-string "\C-k")
+      (kill-line)))
   (defun term-send-yank ()
     "Yank in term mode."
     (interactive)
-    (yank)
-    (term-send-raw-string (current-kill 0)))
+    (term-send-raw-string (current-kill 0))
+    (yank))
+
   :config
-  (setq multi-term-program "/bin/zsh")
+  (setq term-char-mode-buffer-read-only nil)
+  (setq term-char-mode-point-at-process-mark nil)
   (add-hook 'term-mode-hook
           (lambda ()
-            (add-to-list 'term-bind-key-alist '("M-{" . multi-term-prev))
-            (add-to-list 'term-bind-key-alist '("M-}" . multi-term-next))
-            (add-to-list 'term-bind-key-alist '("C-k" . term-send-kill-line))
-            (add-to-list 'term-bind-key-alist '("C-y" . term-send-yank))
+            (setq term-bind-key-alist
+                  '(("M-f" . multi-term-forward-word)
+                    ("M-b" . multi-term-backward-word)
+                    ("C-f" . multi-term-forward-char)
+                    ("C-b" . multi-term-backward-char)
+                    ("C-d" . multi-term-delete-char)
+                    ("C-k" . multi-term-kill-line)
+                    ("C-y" . term-send-yank)
+                    ("C-e" . multi-term-move-end-of-line)
+                    ("C-a" . multi-term-move-beginning-of-line)
+                    ("M-}" . multi-term-next)
+                    ("M-{" . multi-term-prev)
+                    ("C-c C-c" . term-interrupt-subjob)
+                    ("C-c C-e" . term-send-esc)
+                    ("C-p" . previous-line)
+                    ("C-n" . next-line)
+                    ("C-s" . isearch-forward)
+                    ("C-r" . isearch-backward)
+                    ("C-m" . term-send-return)
+                    ("M-o" . term-send-backspace)
+                    ("M-p" . term-send-up)
+                    ("M-n" . term-send-down)
+                    ("M-M" . term-send-forward-kill-word)
+                    ("M-N" . term-send-backward-kill-word)
+                    ("<C-backspace>" . term-send-backward-kill-word)
+                    ("M-r" . term-send-reverse-search-history)
+                    ("M-d" . term-send-delete-word)
+                    ("M-," . term-send-raw)
+                    ("M-." . comint-dynamic-complete)
+                    ("C-=" . multi-term-expand-region)))
+            (read-only-mode nil)
             (yas-minor-mode -1))))
 
 ;; movement
-;;(global-set-key (kbd "C-m") 'back-to-indentation)
 (windmove-default-keybindings)
 
 ;; full screen on startup
