@@ -1,7 +1,7 @@
 (require 'package)
 
 ;; archives
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/") 
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
@@ -98,7 +98,7 @@
 (use-package projectile
   :ensure t
   :init 
-  (projectile-global-mode)
+  (projectile-mode)
   )
 (use-package rainbow-delimiters
   :ensure t
@@ -424,9 +424,7 @@
                     ("M-," . term-send-raw)
                     ("M-." . comint-dynamic-complete)
                     ("C-=" . multi-term-expand-region)))
-            (read-only-mode nil)
             (yas-minor-mode -1))))
-
 ;; movement
 (windmove-default-keybindings)
 
