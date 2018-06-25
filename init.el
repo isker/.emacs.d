@@ -364,7 +364,7 @@
     (interactive)
     (if (not (multi-term-is-at-end-line))
         (forward-word)
-      (term-send-right)))
+      (term-send-forward-word)))
   (defun multi-term-move-beginning-of-line ()
     "Smart version of move-beginning-of-line in term-mode."
     (interactive)
