@@ -365,6 +365,16 @@
     (if (not (multi-term-is-at-end-line))
         (forward-word)
       (term-send-forward-word)))
+  (defun multi-term-forward-kill-word ()
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (call-interactively 'kill-word)
+      (term-send-forward-kill-word)))
+  (defun multi-term-backward-kill-word ()
+    (interactive)
+    (if (not (multi-term-is-at-end-line))
+        (call-interactively 'backward-kill-word)
+      (term-send-backward-kill-word)))
   (defun multi-term-move-beginning-of-line ()
     "Smart version of move-beginning-of-line in term-mode."
     (interactive)
@@ -388,6 +398,10 @@
     (interactive)
     (term-send-raw-string (current-kill 0))
     (yank))
+  (defun multi-term-expand-region ()
+	  "Wrap er/expand-region function in term-mode."
+	  (interactive)
+	  (er/expand-region 1))
 
   :config
   (setq term-char-mode-buffer-read-only nil)
@@ -397,6 +411,8 @@
             (setq term-bind-key-alist
                   '(("M-f" . multi-term-forward-word)
                     ("M-b" . multi-term-backward-word)
+                    ("<C-backspace>" . multi-term-backward-kill-word)
+                    ("M-d" . multi-term-forward-kill-word)
                     ("C-f" . multi-term-forward-char)
                     ("C-b" . multi-term-backward-char)
                     ("C-d" . multi-term-delete-char)
@@ -416,11 +432,7 @@
                     ("M-o" . term-send-backspace)
                     ("M-p" . term-send-up)
                     ("M-n" . term-send-down)
-                    ("M-M" . term-send-forward-kill-word)
-                    ("M-N" . term-send-backward-kill-word)
-                    ("<C-backspace>" . term-send-backward-kill-word)
                     ("M-r" . term-send-reverse-search-history)
-                    ("M-d" . term-send-delete-word)
                     ("M-," . term-send-raw)
                     ("M-." . comint-dynamic-complete)
                     ("C-=" . multi-term-expand-region)))
