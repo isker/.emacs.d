@@ -338,7 +338,7 @@
   ;; https://github.com/aborn/multi-term-plus/blob/master/multi-term-plus.el
   ;; I've added more myself and made the preexisting ones less bad
   (defun multi-term-is-at-end-line ()
-    (equal (line-number-at-pos) (count-lines (point-min) (point-max))))
+    (>= (line-number-at-pos) (count-lines (point-min) (point-max))))
   (defun multi-term-backward-char ()
     "Backward-char in term-mode. "
     (interactive)
@@ -388,9 +388,9 @@
   (defun multi-term-kill-line ()
     "Smart kill-line in multi-term mode."
     (interactive)
+    (kill-line)
     (if (multi-term-is-at-end-line)
-        (term-send-raw-string "\C-k")
-      (kill-line)))
+        (term-send-raw-string "\C-k")))
   (defun term-send-yank ()
     "Yank in term mode."
     (interactive)
