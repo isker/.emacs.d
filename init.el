@@ -30,8 +30,10 @@
 
 ;; use-package
 (eval-when-compile
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
   (require 'use-package))
-(require 'bind-key)                ;; if you use any :bind variant
 
 (use-package ace-window
   :ensure t
@@ -98,14 +100,10 @@
 (use-package projectile
   :ensure t
   :init 
-  (projectile-mode)
-  )
+  (projectile-mode))
 (use-package rainbow-delimiters
   :ensure t
-  :init  
-  ;;(global-rainbow-delimiters-mode)
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'latex-mode-hook 'rainbow-delimiters-mode))
+  :hook ((prog-mode latex-mode) . rainbow-delimiters-mode))
 (use-package flycheck
   :ensure t
   :init
@@ -131,19 +129,21 @@
   (setq web-mode-script-padding 2)
   )
 (use-package clojure-mode
+  :ensure t)
+(use-package aggressive-indent
+  :ensure t
+  :hook (clojure-mode . aggressive-indent-mode))
+(use-package clj-refactor
   :ensure t
   :init
-  (add-hook 'clojure-mode-hook #'paredit-mode)
-  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-  (add-hook 'clojure-mode-hook #'aggressive-indent-mode))
-(use-package aggressive-indent
-  :ensure t)
-(use-package clj-refactor
-  :ensure t)
+  (setq cljr-warn-on-eval nil)
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  :hook (clojure-mode . clj-refactor-mode))
 (use-package cider
   :ensure t
   :init
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode))
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+  (setq cider-prompt-for-symbol nil))
 (use-package helpful
   :ensure t
   :config
@@ -153,7 +153,7 @@
   (defalias 'describe-symbol 'helpful-symbol))
 (use-package paredit
   :ensure t
-  :init)
+  :hook ((emacs-lisp-mode clojure-mode eval-expression-minibuffer-setup) . paredit-mode))
 ;; The package is "python" but the mode is "python-mode"
 (use-package python
   :mode ("\\.py\\'" . python-mode)
@@ -212,6 +212,7 @@
   :mode "\\.js\\'")
 (use-package json-mode
   :ensure t)
+(use-package flx :ensure t)
 (use-package ivy
   :ensure t
   :init
@@ -219,22 +220,24 @@
   ;; ivy claims to do this for you but I've had no such luck.
   (setq completing-read-function 'ivy-completing-read)
   (setq ivy-use-virtual-buffers t)
-  (setq ivy-extra-directories nil))
+  (setq ivy-extra-directories nil)
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-re-builders-alist
+        '((counsel-M-x . ivy--regex-fuzzy)
+          (t . ivy--regex-plus))))
 (use-package counsel
   :ensure t
   :init
   (setq counsel-find-file-at-point t)
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
+         :map counsel-find-file-map
          ("C-l" . counsel-up-directory)))
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
 (use-package yasnippet
   :ensure t
-  :init
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"                                      ;; personal snippets
-          "~/.emacs.d/elpa/yasnippet-20150405.1526/snippets"         ;; the default collection
-          "~/.emacs.d/snippets/yasnippet-go"
-          ))
   :config
   (yas-global-mode 1))
 ;; (use-package auctex
@@ -281,9 +284,7 @@
   (setq color-themes `())
   (setq frame-background-mode 'dark)
   (set-terminal-parameter nil 'background-mode 'dark)
-  (load-theme 'solarized t)
-  :config
-  )
+  (load-theme 'solarized t))
 
 (use-package ws-butler
   :ensure t)
@@ -309,15 +310,13 @@
   :mode "\\.rs\\'"
   :init
   (add-hook 'rust-mode-hook #'racer-mode)
-  (setq rust-format-on-save t)
-  )
+  (setq rust-format-on-save t))
 
 (use-package racer
   :ensure t
   :init
   (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook #'company-mode)
-  )
+  (add-hook 'racer-mode-hook #'company-mode))
 
 (use-package flycheck-rust
   :ensure t
@@ -327,8 +326,7 @@
 (use-package cargo
   :ensure t
   :init
-  (add-hook 'rust-mode-hook #'cargo-minor-mode)
-  )
+  (add-hook 'rust-mode-hook #'cargo-minor-mode))
 (use-package ediff
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain))
