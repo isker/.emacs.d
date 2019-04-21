@@ -35,18 +35,16 @@
     (package-install 'use-package))
   (require 'use-package))
 
+(setq-default use-package-always-ensure t
+              use-package-always-defer t)
+
 (use-package ace-window
-  :ensure t
   :bind
   ("M-j" . ace-window))
-;; (use-package auto-indent-mode
-;;   :ensure t)
 (use-package avy
-  :ensure t
   :bind
   ("M-g w" . avy-goto-word-1))
 (use-package company
-  :ensure t
   :init
   (add-hook 'after-init-hook 'global-company-mode)
   ;; decrease delay before autocompletion popup shows
@@ -54,13 +52,8 @@
   (setq company-tooltip-align-annotations t)
   ;; remove annoying blinking
   (setq company-echo-delay 0)
-  :config
-  ;; (push 'company-jedi company-backends)
-  )
-(use-package company-go
-  :ensure t)
-;; (use-package company-jedi
-;;   :ensure t)
+  :config)
+(use-package company-go)
 (use-package dired
   :init
   (defun ora-dired-rsync (dest)
@@ -92,28 +85,23 @@
       ;; finally, switch to that window
       (other-window 1))))
 (use-package expand-region
-  :ensure t
   :bind ("C-=" . er/expand-region))
+(use-package eww
+  :bind ("C-c e" . eww))
 (use-package multiple-cursors
-  :ensure t
   :bind("C--" . mc/mark-next-like-this))
 (use-package projectile
-  :ensure t
-  :init 
+  :init
   (projectile-mode))
 (use-package rainbow-delimiters
-  :ensure t
   :hook ((prog-mode latex-mode) . rainbow-delimiters-mode))
 (use-package flycheck
-  :ensure t
   :init
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(mode-enabled idle-change))
   (setq flycheck-highlighting-mode 'lines))
-(use-package cc-mode
-  :ensure t)
+(use-package cc-mode)
 (use-package web-mode
-  :ensure t
   :mode
   "\\.html?\\'"
   "\\.phtml\\'"
@@ -128,31 +116,25 @@
   :init
   (setq web-mode-script-padding 2)
   )
-(use-package clojure-mode
-  :ensure t)
+(use-package clojure-mode)
 (use-package aggressive-indent
-  :ensure t
   :hook (clojure-mode . aggressive-indent-mode))
 (use-package clj-refactor
-  :ensure t
   :init
   (setq cljr-warn-on-eval nil)
   (cljr-add-keybindings-with-prefix "C-c C-m")
   :hook (clojure-mode . clj-refactor-mode))
 (use-package cider
-  :ensure t
   :init
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (setq cider-prompt-for-symbol nil))
 (use-package helpful
-  :ensure t
   :config
   (defalias 'describe-key 'helpful-key)
   (defalias 'describe-function 'helpful-callable)
   (defalias 'describe-variable 'helpful-variable)
   (defalias 'describe-symbol 'helpful-symbol))
 (use-package paredit
-  :ensure t
   :hook ((emacs-lisp-mode clojure-mode eval-expression-minibuffer-setup) . paredit-mode))
 ;; The package is "python" but the mode is "python-mode"
 (use-package python
@@ -161,26 +143,22 @@
   :init (add-hook 'python-mode-hook (lambda()
                                       (run-python "python"))))
 (use-package magit
-  :ensure t
   :bind ("C-x m" . magit-status)
   :init
   (setq vc-handled-backends nil)
   (setq magit-refresh-status-buffer nil))
 ;; (use-package automargin
-;;   :ensure t
 ;;   :init
 ;;   (setq automargin-target-width 100)
 ;;   :config
 ;;   (automargin-mode 1))
 (use-package haskell-mode
-  :ensure t
   :init
   ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
   ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
 (use-package go-mode
-  :ensure t
   :init
   (defun my-go-mode-hook ()
     ;; Use goimports instead of go-fmt
@@ -201,20 +179,16 @@
                             (company-mode)))
   )
 (use-package exec-path-from-shell
-  :ensure t
   :init
   (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
   :config
   (exec-path-from-shell-initialize)
   )
 (use-package js2-mode
-  :ensure t
   :mode "\\.js\\'")
-(use-package json-mode
-  :ensure t)
-(use-package flx :ensure t)
+(use-package flx)
+(use-package json-mode)
 (use-package ivy
-  :ensure t
   :init
   (setq ivy-mode 1)
   ;; ivy claims to do this for you but I've had no such luck.
@@ -225,8 +199,14 @@
   (setq ivy-re-builders-alist
         '((counsel-M-x . ivy--regex-fuzzy)
           (t . ivy--regex-plus))))
+(use-package ivy-rich
+  :init (setq ivy-rich-path-style 'abbrev
+              ivy-virtual-abbreviate 'abbreviate
+              ivy-rich-switch-buffer-align-virtual-buffer t
+              ivy-rich-switch-buffer-mode-max-length 10
+              ivy-rich-switch-buffer-mode-max-length 50)
+  :config (ivy-rich-mode 1))
 (use-package counsel
-  :ensure t
   :init
   (setq counsel-find-file-at-point t)
   :bind (("M-x" . counsel-M-x)
@@ -234,18 +214,14 @@
          :map counsel-find-file-map
          ("C-l" . counsel-up-directory)))
 (use-package which-key
-  :ensure t
   :config (which-key-mode))
 (use-package yasnippet
-  :ensure t
   :config
   (yas-global-mode 1))
 ;; (use-package auctex
-;;   :ensure t
 ;;   :init
 ;;   (setq TeX-PDF-mode t))
 (use-package comment-dwim-2
-  :ensure t
   :config
   (define-key global-map [remap comment-dwim] 'comment-dwim-2))
 (use-package eshell
@@ -272,14 +248,13 @@
   (add-hook
    'eshell-mode-hook
    '(lambda ()
-      (local-set-key (kbd "C-a") 
+      (local-set-key (kbd "C-a")
                      '(lambda ()
                         (interactive)
                         (beginning-of-line)
                         (search-forward-regexp eshell-prompt-regexp))))))
 
 (use-package color-theme-solarized
-  :ensure t
   :init
   (setq color-themes `())
   (setq frame-background-mode 'dark)
@@ -287,10 +262,9 @@
   (load-theme 'solarized t))
 
 (use-package ws-butler
-  :ensure t)
+  :init (ws-butler-global-mode 1))
 
 (use-package org
-  :ensure t
   :init
   (add-hook 'org-mode-hook
             (lambda ()
@@ -300,38 +274,32 @@
   )
 
 (use-package dumb-jump
-  :ensure t
   :init
   (dumb-jump-mode)
   (setq dumb-jump-force-searcher 'rg))
 
 (use-package rust-mode
-  :ensure t
   :mode "\\.rs\\'"
   :init
   (add-hook 'rust-mode-hook #'racer-mode)
   (setq rust-format-on-save t))
 
 (use-package racer
-  :ensure t
   :init
   (add-hook 'racer-mode-hook #'eldoc-mode)
   (add-hook 'racer-mode-hook #'company-mode))
 
 (use-package flycheck-rust
-  :ensure t
   :init
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 (use-package cargo
-  :ensure t
   :init
   (add-hook 'rust-mode-hook #'cargo-minor-mode))
 (use-package ediff
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain))
 (use-package multi-term
-  :ensure t
   :init
   (setq term-buffer-maximum-size 25000)
   ;; Most of these multi-term funs stolen from
@@ -537,7 +505,6 @@
 ;; Put this after custom-safe-themes so that it stops complaining about
 ;; untrusted color themes.
 (use-package smart-mode-line
-  :ensure t
   :config
   (sml/apply-theme 'respectful)
   :init
