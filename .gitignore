@@ -1,0 +1,14 @@
+/.cask
+/.mc-lists.el
+/auto-save-list
+/backup
+/elpa
+/eshell
+/projectile-bookmarks.eld
+/projectile.cache
+/recentf
+/request
+/tramp
+/transient
+/url
+/var
