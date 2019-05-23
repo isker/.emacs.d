@@ -54,7 +54,9 @@
   (setq company-echo-delay 0)
   :config)
 (use-package company-go)
+(use-package docker-tramp)
 (use-package dired
+  :ensure nil
   :init
   (defun ora-dired-rsync (dest)
     (interactive
@@ -179,11 +181,11 @@
                             (company-mode)))
   )
 (use-package exec-path-from-shell
+  :defer nil
   :init
   (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
   :config
-  (exec-path-from-shell-initialize)
-  )
+  (exec-path-from-shell-initialize))
 (use-package js2-mode
   :mode "\\.js\\'")
 (use-package flx)
