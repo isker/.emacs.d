@@ -456,7 +456,7 @@
 ;;-------------------------------------------------------------------------------
 
 ;; Font
-(add-to-list 'default-frame-alist `(font . , "Essential PragmataPro"))
+(add-to-list 'default-frame-alist `(font . , "PragmataPro"))
 
 ;; Get rid of menu bars
 (menu-bar-mode -1) 
