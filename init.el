@@ -2,7 +2,7 @@
 
 ;; archives
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+			                   ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
 ;;-------------------------------------------------------------------------------
@@ -227,34 +227,45 @@
   :config
   (define-key global-map [remap comment-dwim] 'comment-dwim-2))
 (use-package eshell
-  :bind
-  ("M-e" . eshell)
+  :demand t
   :config
-  
+
   ;; allow . expansion for executing programs
   (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
-    (setq command (file-truename command)))
-
-  (add-hook 'eshell-mode-hook (lambda()
-                                (yas-minor-mode -1)))
-  (add-hook 'eshell-mode-hook (lambda()
-                                (company-mode -1)))
-
-  ;; make eshell autocompletion like bash
-  ;;(add-hook
-  ;; 'eshell-mode-hook
-  ;; (lambda ()
-  ;;   (setq pcomplete-cycle-completions nil)))
-
-  ;; eshell beginning of line is end of prompt
-  (add-hook
-   'eshell-mode-hook
-   '(lambda ()
-      (local-set-key (kbd "C-a")
-                     '(lambda ()
-                        (interactive)
-                        (beginning-of-line)
-                        (search-forward-regexp eshell-prompt-regexp))))))
+    (setq command (file-truename command))))
+(use-package aweshell
+  :demand t
+  :load-path "vendor/aweshell"
+  :after (eshell)
+  :bind (("M-e" . aweshell-new)
+         ("M-}" . aweshell-next)
+         ("M-{" . aweshell-prev)))
+(use-package eshell-prompt-extras
+  :after (aweshell)
+  :init
+  (setq eshell-highlight-prompt nil)
+  (defun epe-theme-lambda-gitless ()
+    "A eshell-prompt lambda theme.  Copied from the builtin one, but without git."
+    (setq eshell-prompt-regexp "^[^#\nλ]*[#λ] ")
+    (concat
+     (when (epe-remote-p)
+       (epe-colorize-with-face
+        (concat (epe-remote-user) "@" (epe-remote-host) " ")
+        'epe-remote-face))
+     (when (and epe-show-python-info (bound-and-true-p venv-current-name))
+       (epe-colorize-with-face (concat "(" venv-current-name ") ") 'epe-venv-face))
+     (let ((f (cond ((eq epe-path-style 'fish) 'epe-fish-path)
+                    ((eq epe-path-style 'single) 'epe-abbrev-dir-name)
+                    ((eq epe-path-style 'full) 'abbreviate-file-name))))
+       (epe-colorize-with-face (funcall f (eshell/pwd)) 'epe-dir-face))
+     (when (epe-git-p)
+       (concat
+        (epe-colorize-with-face ":" 'epe-dir-face)
+        (epe-colorize-with-face (epe-git-branch) 'epe-git-face)))
+     (epe-colorize-with-face " λ" 'epe-symbol-face)
+     (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
+     " "))
+  (setq eshell-prompt-function 'epe-theme-lambda-gitless))
 
 (use-package color-theme-solarized
   :init
@@ -433,7 +444,7 @@
       )
 
 ;; disable startup gnu emacs buffer
-(setq inhibit-startup-message t)  
+(setq inhibit-startup-message t)
 
 ;; scroll with cursor on edge, not shift page to center on cursor
 (setq scroll-step 1)
@@ -459,21 +470,21 @@
 (add-to-list 'default-frame-alist `(font . , "PragmataPro"))
 
 ;; Get rid of menu bars
-(menu-bar-mode -1) 
-(toggle-scroll-bar -1) 
-(tool-bar-mode -1) 
+(menu-bar-mode -1)
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
 
 ;; Oh god the noise
 (setq ring-bell-function 'ignore)
 
-;; show line number in mode line 
+;; show line number in mode line
 (line-number-mode t)
 
 ;; show column number in mode-line
 (column-number-mode t)
 
 ;; disable menu bar
-(menu-bar-mode -1) 
+(menu-bar-mode -1)
 
 (setq initial-scratch-message nil)
 (setq initial-major-mode 'fundamental-mode)
@@ -495,7 +506,7 @@
  '(org-special-ctrl-a/e t)
  '(package-selected-packages
    (quote
-    (helpful json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
+    (eshell-prompt-extras helpful json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
  '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
