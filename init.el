@@ -267,12 +267,22 @@
      " "))
   (setq eshell-prompt-function 'epe-theme-lambda-gitless))
 
-(use-package color-theme-solarized
+(use-package solarized-theme
   :init
-  (setq color-themes `())
-  (setq frame-background-mode 'dark)
-  (set-terminal-parameter nil 'background-mode 'dark)
-  (load-theme 'solarized t))
+  (setq x-underline-at-descent-line t)
+  ;; Use less bolding
+  (setq solarized-use-less-bold t)
+  ;; make the fringe stand out from the background
+  (setq solarized-distinct-fringe-background t)
+  ;; Don't change the font for some headings and titles
+  (setq solarized-use-variable-pitch nil)
+  ;; Avoid all font-size changes
+  (setq solarized-height-minus-1 1.0)
+  (setq solarized-height-plus-1 1.0)
+  (setq solarized-height-plus-2 1.0)
+  (setq solarized-height-plus-3 1.0)
+  (setq solarized-height-plus-4 1.0)
+  (load-theme 'solarized-dark t))
 
 (use-package ws-butler
   :init (ws-butler-global-mode 1))
