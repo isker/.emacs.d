@@ -145,7 +145,8 @@
   :init (add-hook 'python-mode-hook (lambda()
                                       (run-python "python"))))
 (use-package magit
-  :bind ("C-x m" . magit-status)
+  :bind (("C-x m" . magit-status)
+         ("C-c g" . magit-file-dispatch))
   :init
   (setq vc-handled-backends nil)
   (setq magit-refresh-status-buffer nil))
@@ -237,7 +238,12 @@
   :demand t
   :load-path "vendor/aweshell"
   :after (eshell)
-  :bind (("M-e" . aweshell-new)
+  :init
+  (setq-local company-auto-complete nil)
+  (setq-local company-idle-delay 10)
+  (setq aweshell-clear-buffer-key "M-c")
+  :bind (:map eshell-mode-map
+         ("M-e" . aweshell-new)
          ("M-}" . aweshell-next)
          ("M-{" . aweshell-prev)))
 (use-package eshell-prompt-extras
