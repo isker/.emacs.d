@@ -45,8 +45,8 @@
   :bind
   ("M-g w" . avy-goto-word-1))
 (use-package company
+  :hook (after-init . global-company-mode)
   :init
-  (add-hook 'after-init-hook 'global-company-mode)
   ;; decrease delay before autocompletion popup shows
   (setq company-idle-delay .3)
   (setq company-tooltip-align-annotations t)
@@ -192,8 +192,8 @@
 (use-package flx)
 (use-package json-mode)
 (use-package ivy
+  :hook (after-init . ivy-mode)
   :init
-  (setq ivy-mode 1)
   ;; ivy claims to do this for you but I've had no such luck.
   (setq completing-read-function 'ivy-completing-read)
   (setq ivy-use-virtual-buffers t)
@@ -203,12 +203,22 @@
         '((counsel-M-x . ivy--regex-fuzzy)
           (t . ivy--regex-plus))))
 (use-package ivy-rich
+  :hook (ivy-mode . (lambda () (ivy-rich-mode 1)))
   :init (setq ivy-rich-path-style 'abbrev
               ivy-virtual-abbreviate 'abbreviate
               ivy-rich-switch-buffer-align-virtual-buffer t
               ivy-rich-switch-buffer-mode-max-length 10
-              ivy-rich-switch-buffer-mode-max-length 50)
-  :config (ivy-rich-mode 1))
+              ivy-rich-switch-buffer-mode-max-length 50))
+(use-package ivy-posframe
+  :disabled
+  :hook (ivy-mode . ivy-posframe-enable)
+  :init
+  ;; Different command can use different display function.
+  (setq ivy-posframe-display-functions-alist
+        '((swiper          . ivy-posframe-display-at-point)
+          (complete-symbol . ivy-posframe-display-at-point)
+          (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+          (t               . ivy-posframe-display))))
 (use-package counsel
   :init
   (setq counsel-find-file-at-point t)
@@ -229,11 +239,17 @@
   (define-key global-map [remap comment-dwim] 'comment-dwim-2))
 (use-package eshell
   :demand t
+  :bind (:map eshell-mode-map
+              ([remap eshell-pcomplete] . completion-at-point))
+  :init
+  (setq eshell-cmpl-cycle-completions nil)
+  (setq eshell-history-size 100000)
   :config
-
   ;; allow . expansion for executing programs
   (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
     (setq command (file-truename command))))
+(use-package esh-autosuggest
+  :hook (eshell-mode . esh-autosuggest-mode))
 (use-package aweshell
   :demand t
   :load-path "vendor/aweshell"
@@ -243,9 +259,9 @@
   (setq-local company-idle-delay 10)
   (setq aweshell-clear-buffer-key "M-c")
   :bind (:map eshell-mode-map
-         ("M-e" . aweshell-new)
-         ("M-}" . aweshell-next)
-         ("M-{" . aweshell-prev)))
+              ("M-e" . aweshell-new)
+              ("M-}" . aweshell-next)
+              ("M-{" . aweshell-prev)))
 (use-package eshell-prompt-extras
   :after (aweshell)
   :init
@@ -511,7 +527,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(column-number-mode t)
- '(company-global-modes (quote (not eshell-mode)))
  '(custom-safe-themes
    (quote
     ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
