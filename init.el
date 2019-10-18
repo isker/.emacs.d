@@ -189,6 +189,19 @@
   (exec-path-from-shell-initialize))
 (use-package js2-mode
   :mode "\\.js\\'")
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :init
+  (setq typescript-indent-level 2))
+(use-package lsp-mode
+  :hook ((js2-mode . lsp)
+         (typescript-mode . lsp))
+  :commands lsp
+  :bind (("M-<RET>" . lsp-execute-code-action)))
+(use-package lsp-ui
+  :commands lsp-ui-mode)
+(use-package company-lsp
+  :commands company-lsp)
 (use-package flx)
 (use-package json-mode)
 (use-package ivy
