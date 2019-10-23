@@ -327,6 +327,7 @@
   (add-hook 'org-mode-hook
             (lambda ()
               (set-fill-column 90)))
+  :custom (org-special-ctrl-a/e t)
   ;:bind
   ;("M-q" . toggle-truncate-lines)
   )
@@ -534,33 +535,11 @@
 (setq initial-scratch-message nil)
 (setq initial-major-mode 'fundamental-mode)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(column-number-mode t)
- '(custom-safe-themes
-   (quote
-    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(fill-column 80)
- '(js-indent-level 2)
- '(menu-bar-mode nil)
- '(org-agenda-files (quote ("~/org/clubs/upe.org")))
- '(org-special-ctrl-a/e t)
- '(package-selected-packages
-   (quote
-    (eshell-prompt-extras helpful json-mode multi-term cargo flycheck-rust racer rust-mode yasnippet ws-butler web-mode use-package smart-mode-line rainbow-delimiters projectile paredit multiple-cursors magit js2-mode haskell-mode flycheck expand-region exec-path-from-shell company-jedi company-go comment-dwim-2 color-theme-solarized clojure-mode automargin ace-window)))
- '(standard-indent 2))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq fill-column 80)
+(setq custom-safe-themes t)
 
-;; Put this after custom-safe-themes so that it stops complaining about
-;; untrusted color themes.
+(setq standard-indent 2)
+
 (use-package smart-mode-line
   :config
   (sml/apply-theme 'respectful)
