@@ -210,7 +210,7 @@
   ;; ivy claims to do this for you but I've had no such luck.
   (setq completing-read-function 'ivy-completing-read)
   (setq ivy-use-virtual-buffers t)
-  (setq ivy-extra-directories nil)
+  (setq ivy-extra-directories '("./"))
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
         '((counsel-M-x . ivy--regex-fuzzy)
