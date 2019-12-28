@@ -14,6 +14,7 @@
   "Edit the `user-init-file', in another window."
   (interactive)
   (find-file user-init-file))
+(global-set-key (kbd "C-c i") 'find-user-init-file)
 
 ;; http://emacsredux.com/blog/2013/04/09/kill-whole-line/
 (defun smart-kill-whole-line (&optional arg)
