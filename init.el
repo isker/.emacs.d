@@ -327,7 +327,7 @@
   (add-hook 'org-mode-hook
             (lambda ()
               (set-fill-column 90)))
-  :custom (org-special-ctrl-a/e t)
+  (setq org-special-ctrl-a/e t)
   ;:bind
   ;("M-q" . toggle-truncate-lines)
   )
@@ -539,6 +539,8 @@
 (setq custom-safe-themes t)
 
 (setq standard-indent 2)
+
+(setq custom-file null-device)
 
 (use-package smart-mode-line
   :config
