@@ -498,9 +498,6 @@
 ;; delete current selection when characters typed
 (delete-selection-mode t)
 
-;; --- auto refresh buffers mode ---
-(global-auto-revert-mode t)
-
 ;; enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
 
