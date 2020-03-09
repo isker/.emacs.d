@@ -149,7 +149,10 @@
          ("C-c g" . magit-file-dispatch))
   :init
   (setq vc-handled-backends nil)
-  (setq magit-refresh-status-buffer nil))
+  (setq magit-refresh-status-buffer nil)
+  (when (eq system-type 'windows-nt)
+    ;; https://github.com/magit/magit/wiki/Pushing-with-Magit-from-Windows
+    (setenv "GIT_ASKPASS" "git-gui--askpass")))
 ;; (use-package automargin
 ;;   :init
 ;;   (setq automargin-target-width 100)
@@ -183,6 +186,7 @@
   )
 (use-package exec-path-from-shell
   :defer nil
+  :if (not (eq system-type 'windows-nt))
   :init
   (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
   :config
