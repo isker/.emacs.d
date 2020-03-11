@@ -94,8 +94,13 @@
 (use-package multiple-cursors
   :bind("C--" . mc/mark-next-like-this))
 (use-package projectile
+  :demand t
   :init
-  (projectile-mode))
+  (setq projectile-completion-system 'ivy)
+  :config
+  (projectile-mode)
+  :bind-keymap
+  ("C-c p" . projectile-command-map))
 (use-package rainbow-delimiters
   :hook ((prog-mode latex-mode) . rainbow-delimiters-mode))
 (use-package flycheck
@@ -216,10 +221,10 @@
   (setq completing-read-function 'ivy-completing-read)
   (setq ivy-use-virtual-buffers t)
   (setq ivy-extra-directories '("./"))
-  (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
-        '((counsel-M-x . ivy--regex-fuzzy)
-          (t . ivy--regex-plus))))
+        '((counsel-M-x . ivy--regex-ignore-order)
+          (t . ivy--regex-plus)))
+  )
 (use-package ivy-rich
   :hook (ivy-mode . (lambda () (ivy-rich-mode 1)))
   :init (setq ivy-rich-path-style 'abbrev
@@ -240,10 +245,19 @@
 (use-package counsel
   :init
   (setq counsel-find-file-at-point t)
+  :config
+  (setq ivy-initial-inputs-alist nil)
   :bind (("M-x" . counsel-M-x)
+         ("C-h f" . counsel-describe-function)
+         ("C-h v" . counsel-describe-variable)
          ("C-x C-f" . counsel-find-file)
          :map counsel-find-file-map
          ("C-l" . counsel-up-directory)))
+  (use-package counsel-projectile
+    :after projectile
+    :demand t
+    :config
+    (counsel-projectile-mode))
 (use-package which-key
   :config (which-key-mode))
 (use-package yasnippet
