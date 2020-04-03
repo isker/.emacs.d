@@ -214,6 +214,8 @@
   :commands company-lsp)
 (use-package flx)
 (use-package json-mode)
+(use-package yaml-mode
+  :mode "\\.yaml\\'")
 (use-package ivy
   :hook (after-init . ivy-mode)
   :init
