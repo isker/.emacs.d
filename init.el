@@ -560,6 +560,16 @@
 
 (setq custom-file null-device)
 
+(setq shell-command-dont-erase-buffer t)
+
+(defun shell-command-print-separator ()
+  (overlay-put (make-overlay (point-max) (point-max))
+               'before-string
+               (propertize "!" 'display
+                           (list 'left-fringe
+                                 'right-triangle))))
+(advice-add 'shell-command--save-pos-or-erase :after 'shell-command-print-separator)
+
 (use-package smart-mode-line
   :config
   (sml/apply-theme 'respectful)
