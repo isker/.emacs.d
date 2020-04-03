@@ -255,11 +255,13 @@
          ("C-x C-f" . counsel-find-file)
          :map counsel-find-file-map
          ("C-l" . counsel-up-directory)))
-  (use-package counsel-projectile
-    :after projectile
-    :demand t
-    :config
-    (counsel-projectile-mode))
+(use-package counsel-projectile
+  :after projectile
+  :demand t
+  :config
+  (counsel-projectile-mode))
+(use-package counsel-tramp
+  :bind (("C-c C-s . counsel-tramp")))
 (use-package which-key
   :config (which-key-mode))
 (use-package yasnippet
