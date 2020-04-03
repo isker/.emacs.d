@@ -226,7 +226,10 @@
   (setq ivy-re-builders-alist
         '((counsel-M-x . ivy--regex-ignore-order)
           (t . ivy--regex-plus)))
-  )
+  :config
+  (ivy-add-actions
+   'counsel-find-file
+   '(("e" eww-open-file "eww"))))
 (use-package ivy-rich
   :hook (ivy-mode . (lambda () (ivy-rich-mode 1)))
   :init (setq ivy-rich-path-style 'abbrev
