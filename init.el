@@ -44,7 +44,7 @@
   ("M-j" . ace-window))
 (use-package avy
   :bind
-  ("M-g w" . avy-goto-word-1))
+  ("C-;" . avy-goto-char-timer))
 (use-package company
   :hook (after-init . global-company-mode)
   :init
@@ -203,17 +203,31 @@
   :mode "\\.ts\\'"
   :init
   (setq typescript-indent-level 2))
+(use-package lsp-python-ms
+  :demand
+  :hook (python-mode . lsp)
+  :config
+  ;; (setq lsp-python-ms-python-executable-cmd python-shell-interpreter)
+  )
 (use-package lsp-mode
   :hook ((js2-mode . lsp)
-         (typescript-mode . lsp))
+         (web-mode . lsp)
+         (typescript-mode . lsp)
+         (python-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
-  :bind (("M-<RET>" . lsp-execute-code-action)))
+  :bind (("M-<RET>" . lsp-execute-code-action))
+  :init
+  ;; (advice-add 'lsp--server-binary-present? :before #'direnv--maybe-update-environment)
+)
 (use-package lsp-ui
   :commands lsp-ui-mode)
-(use-package company-lsp
-  :commands company-lsp)
+(use-package lsp-ivy
+  :commands ivy-lsp-workspace-symbol)
 (use-package flx)
-(use-package json-mode)
+(use-package json-mode
+  :init
+  (setq js-indent-level 2))
 (use-package yaml-mode
   :mode "\\.yaml\\'")
 (use-package ivy
@@ -281,8 +295,14 @@
   :bind (:map eshell-mode-map
               ([remap eshell-pcomplete] . completion-at-point))
   :init
+  (setq eshell-visual-subcommands '(("comp" "build" "test")))
   (setq eshell-cmpl-cycle-completions nil)
   (setq eshell-history-size 100000)
+  (defun eshell/in-term (prog &rest args)
+    "Run shell command in term buffer."
+    (switch-to-buffer (apply #'make-term prog prog nil args))
+    (term-mode)
+    (term-char-mode))
   :config
   ;; allow . expansion for executing programs
   (defadvice eshell-gather-process-output (before absolute-cmd (command args) act)
@@ -366,13 +386,8 @@
 (use-package rust-mode
   :mode "\\.rs\\'"
   :init
-  (add-hook 'rust-mode-hook #'racer-mode)
   (setq rust-format-on-save t))
 
-(use-package racer
-  :init
-  (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook #'company-mode))
 
 (use-package flycheck-rust
   :init
@@ -384,6 +399,15 @@
 (use-package ediff
   :init
   (setq ediff-window-setup-function 'ediff-setup-windows-plain))
+(use-package savehist
+  :init
+  (savehist-mode 1))
+(use-package persistent-scratch
+  :init
+  (persistent-scratch-setup-default))
+(use-package direnv
+  :init
+  (direnv-mode))
 (use-package multi-term
   :init
   (setq term-buffer-maximum-size 25000)
@@ -564,6 +588,8 @@
 (setq standard-indent 2)
 
 (setq custom-file null-device)
+
+(advice-add 'risky-local-variable-p :override #'ignore)
 
 (setq shell-command-dont-erase-buffer t)
 
