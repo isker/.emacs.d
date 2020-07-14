@@ -420,6 +420,9 @@
 (use-package direnv
   :init
   (direnv-mode))
+(use-package ctrlf
+  :init
+  (ctrlf-mode))
 (use-package multi-term
   :init
   (setq term-buffer-maximum-size 25000)
