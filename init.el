@@ -100,7 +100,8 @@
   :config
   (projectile-mode)
   :bind-keymap
-  ("C-c p" . projectile-command-map))
+  ("C-c p" . projectile-command-map)
+  ("s-p" . projectile-command-map))
 (use-package rainbow-delimiters
   :hook ((prog-mode latex-mode) . rainbow-delimiters-mode))
 (use-package flycheck
