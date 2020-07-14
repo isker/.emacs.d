@@ -122,9 +122,16 @@
   "\\.djhtml\\'"
   "\\.vm\\'"
   "\\.jsx\\'"
+  "\\.js\\'"
   :init
   (setq web-mode-script-padding 2)
-  )
+  :config
+  (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+  (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil)))
+(use-package prettier
+  :hook ((web-mode js2-mode) . prettier-mode))
 (use-package clojure-mode)
 (use-package aggressive-indent
   :hook (clojure-mode . aggressive-indent-mode))
@@ -198,8 +205,8 @@
   (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
   :config
   (exec-path-from-shell-initialize))
-(use-package js2-mode
-  :mode "\\.js\\'")
+;; (use-package js2-mode
+;;   :mode "\\.js\\'")
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :init
@@ -211,14 +218,18 @@
   ;; (setq lsp-python-ms-python-executable-cmd python-shell-interpreter)
   )
 (use-package lsp-mode
-  :hook ((js2-mode . lsp)
+  ;; Don't run lsp-mode until local variables are handled.
+  ;; They often control the initialization of servers.
+  :hook ((hack-local-variables
+          . (lambda () (when (derived-mode-p 'js2-mode 'web-mode 'typescript-mode 'python-mode) (lsp))))
+         (js2-mode . lsp)
          (web-mode . lsp)
          (typescript-mode . lsp)
          (python-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :bind (("M-<RET>" . lsp-execute-code-action))
-  :init
+  :config
   ;; (advice-add 'lsp--server-binary-present? :before #'direnv--maybe-update-environment)
 )
 (use-package lsp-ui
