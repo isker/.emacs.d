@@ -1,3 +1,5 @@
+(require 'package)
+
 ;; archives
 (when (eval-when-compile (< emacs-major-version 27))
   (load "~/.emacs.d/early-init.el")
