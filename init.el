@@ -1,9 +1,7 @@
-(require 'package)
-
 ;; archives
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")))
-(package-initialize)
+(when (eval-when-compile (< emacs-major-version 27))
+  (load "~/.emacs.d/early-init.el")
+  (package-initialize))
 
 ;;-------------------------------------------------------------------------------
 ;;; DEFINITIONS
