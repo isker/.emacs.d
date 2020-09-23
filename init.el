@@ -40,6 +40,20 @@
 (use-package ace-window
   :bind
   ("M-j" . ace-window))
+(use-package jka-compr-hook
+  :ensure nil
+  :init
+  (add-to-list 'jka-compr-compression-info-list
+             ["\\.br\\'"
+              "brotli compressing"  "brotli" nil
+              "brotli decompressing" "brotli" ("-d")
+              nil t])
+  (add-to-list 'jka-compr-mode-alist-additions
+               '("\\.tar.br\\'" . tar-mode))
+  (jka-compr-update))
+(use-package adaptive-wrap
+  :demand t
+  :hook (fundamental-mode . adaptive-wrap-prefix-mode))
 (use-package avy
   :bind
   ("C-;" . avy-goto-char-timer))
