@@ -134,8 +134,6 @@
   "\\.mustache\\'"
   "\\.djhtml\\'"
   "\\.vm\\'"
-  "\\.jsx\\'"
-  "\\.js\\'"
   :init
   (setq web-mode-script-padding 2)
   :config
@@ -143,8 +141,16 @@
   (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
   (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
   (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil)))
+(use-package js-mode
+  :ensure nil
+  :config
+  (unbind-key "M-." js-mode-map)
+  :mode
+  "\\.jsx\\'"
+  "\\.js\\'"
+  "\\.mjs\\'")
 (use-package prettier
-  :hook ((web-mode js2-mode) . prettier-mode))
+  :hook ((web-mode js-mode js2-mode) . prettier-mode))
 (use-package clojure-mode)
 (use-package aggressive-indent
   :hook (clojure-mode . aggressive-indent-mode))
@@ -234,8 +240,9 @@
   ;; Don't run lsp-mode until local variables are handled.
   ;; They often control the initialization of servers.
   :hook ((hack-local-variables
-          . (lambda () (when (derived-mode-p 'js2-mode 'web-mode 'typescript-mode 'python-mode) (lsp))))
+          . (lambda () (when (derived-mode-p 'js-mode 'js2-mode 'web-mode 'typescript-mode 'python-mode) (lsp))))
          (js2-mode . lsp)
+         (js-mode . lsp)
          (web-mode . lsp)
          (typescript-mode . lsp)
          (python-mode . lsp)
