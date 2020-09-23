@@ -68,6 +68,7 @@
   :config)
 (use-package company-go)
 (use-package docker-tramp)
+(use-package dockerfile-mode)
 (use-package dired
   :ensure nil
   :init
