@@ -2,8 +2,21 @@
 
 ;; archives
 (when (eval-when-compile (< emacs-major-version 27))
-  (load "~/.emacs.d/early-init.el")
-  (package-initialize))
+  (load "~/.emacs.d/early-init.el"))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(setq straight-use-package-by-default t)
 
 ;;-------------------------------------------------------------------------------
 ;;; DEFINITIONS
@@ -30,20 +43,25 @@
 (setq gc-cons-threshold 20000000)
 
 ;; use-package
-(eval-when-compile
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (require 'use-package))
+(straight-use-package 'use-package)
 
-(setq-default use-package-always-ensure t
-              use-package-always-defer t)
+(setq-default use-package-always-defer t)
 
+(use-package no-littering
+  :demand t
+  :config
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+(use-package recentf
+  :straight (:type built-in)
+  :config
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
 (use-package ace-window
   :bind
   ("M-j" . ace-window))
 (use-package jka-compr-hook
-  :ensure nil
+  :straight (:type built-in)
   :init
   (add-to-list 'jka-compr-compression-info-list
              ["\\.br\\'"
@@ -72,7 +90,7 @@
 (use-package docker-tramp)
 (use-package dockerfile-mode)
 (use-package dired
-  :ensure nil
+  :straight (:type built-in)
   :init
   (defun ora-dired-rsync (dest)
     (interactive
@@ -144,7 +162,7 @@
   (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
   (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil)))
 (use-package js-mode
-  :ensure nil
+  :straight (:type built-in)
   :config
   (unbind-key "M-." js-mode-map)
   :mode
@@ -326,8 +344,8 @@
   (define-key global-map [remap comment-dwim] 'comment-dwim-2))
 (use-package eshell
   :demand t
-  :bind (:map eshell-mode-map
-              ([remap eshell-pcomplete] . completion-at-point))
+  ;; :bind (:map eshell-mode-map
+  ;;             ([remap eshell-pcomplete] . completion-at-point))
   :init
   (setq eshell-visual-subcommands '(("comp" "build" "test")))
   (setq eshell-cmpl-cycle-completions nil)
@@ -345,7 +363,8 @@
   :hook (eshell-mode . esh-autosuggest-mode))
 (use-package aweshell
   :demand t
-  :load-path "vendor/aweshell"
+  :straight (aweshell :type git :host github :repo "manateelazycat/aweshell"
+                      :fork (:host github :repo "isker/aweshell"))
   :after (eshell)
   :init
   (setq-local company-auto-complete nil)
