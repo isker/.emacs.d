@@ -324,6 +324,9 @@
          ("C-x C-f" . counsel-find-file)
          :map counsel-find-file-map
          ("C-l" . counsel-up-directory)))
+(use-package ivy-prescient
+  :after (counsel)
+  :hook (ivy-mode . ivy-prescient-mode))
 (use-package counsel-projectile
   :after projectile
   :demand t
