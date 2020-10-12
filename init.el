@@ -347,8 +347,6 @@
   (define-key global-map [remap comment-dwim] 'comment-dwim-2))
 (use-package eshell
   :demand t
-  ;; :bind (:map eshell-mode-map
-  ;;             ([remap eshell-pcomplete] . completion-at-point))
   :init
   (setq eshell-visual-subcommands '(("comp" "build" "test")))
   (setq eshell-cmpl-cycle-completions nil)
