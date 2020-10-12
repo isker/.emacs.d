@@ -4,6 +4,7 @@
 (when (eval-when-compile (< emacs-major-version 27))
   (load "~/.emacs.d/early-init.el"))
 
+(setq straight-repository-branch "develop")
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
