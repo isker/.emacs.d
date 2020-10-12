@@ -368,8 +368,9 @@
                       :fork (:host github :repo "isker/aweshell"))
   :after (eshell)
   :init
-  (setq-local company-auto-complete nil)
-  (setq-local company-idle-delay 10)
+  ;; Something about these is evil in 27.1
+  ;; (setq-local company-auto-complete nil)
+  ;; (setq-local company-idle-delay 10)
   (setq aweshell-clear-buffer-key "M-c")
   :bind (:map eshell-mode-map
               ("M-e" . aweshell-new)
