@@ -612,6 +612,13 @@
 
 (setq mouse-yank-at-point t)
 
+;; Popup management
+;; https://github.com/nex3/perspective-el/blob/1fc13646623f42e1d70cf1f651c4b154e12070ca/README.md#some-musings-on-emacs-window-layouts
+(setq display-buffer-alist
+      '((".*" (display-buffer-reuse-window display-buffer-same-window))))
+(setq display-buffer-reuse-frames t)         ; reuse windows in other frames
+(setq even-window-sizes nil)                 ; display-buffer: avoid resizing
+
 ;;-------------------------------------------------------------------------------
 ;;; COSMETICS
 ;;-------------------------------------------------------------------------------
