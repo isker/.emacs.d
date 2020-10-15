@@ -570,7 +570,12 @@
                     ("C-=" . multi-term-expand-region)))
             (yas-minor-mode -1))))
 ;; movement
-(windmove-default-keybindings)
+(use-package windmove
+  :straight (:type built-in)
+  :bind (("s-w" . windmove-up)
+         ("s-a" . windmove-left)
+         ("s-s" . windmove-down)
+         ("s-d" . windmove-right)))
 
 ;; full screen on startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
