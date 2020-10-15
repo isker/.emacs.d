@@ -450,6 +450,10 @@
   :init
   (setq rust-format-on-save t))
 
+(use-package wrap-region
+  :init
+  (wrap-region-mode 1)
+  (add-to-list 'wrap-region-except-modes 'paredit-mode))
 
 (use-package flycheck-rust
   :init

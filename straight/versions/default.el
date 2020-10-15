@@ -82,6 +82,7 @@
  ("use-package" . "4fb1f9a68f1e7e7d614652afc017a6652fd029f1")
  ("web-mode" . "b4b0a857088d12cf254f6a2105c58039f29a0d04")
  ("with-editor" . "c4768f51c7415119519b4626d8643d60e584098c")
+ ("wrap-region.el" . "fbae9b0f106187af19823f1a6260b5c68b7252e6")
  ("ws-butler" . "52321b99be69aa1b661da7743c4421a30d8b6bcb")
  ("yaml-mode" . "68fecb5f0dec712a10c8655df6881392a4613617")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6"))
