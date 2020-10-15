@@ -245,6 +245,9 @@
   (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
   :config
   (exec-path-from-shell-initialize))
+(use-package elec-pair
+  :straight (:type built-in)
+  :config (electric-pair-mode))
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :init
