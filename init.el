@@ -641,7 +641,7 @@
 (setq initial-scratch-message nil)
 (setq initial-major-mode 'fundamental-mode)
 
-(setq fill-column 80)
+(setq-default fill-column 80)
 (setq custom-safe-themes t)
 
 (setq standard-indent 2)
