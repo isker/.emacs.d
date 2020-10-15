@@ -245,8 +245,6 @@
   (setq exec-path-from-shell-variables '("HOME" "GOPATH" "PATH" "MANPATH"))
   :config
   (exec-path-from-shell-initialize))
-;; (use-package js2-mode
-;;   :mode "\\.js\\'")
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :init
