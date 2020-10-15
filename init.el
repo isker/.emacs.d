@@ -136,6 +136,11 @@
   :bind-keymap
   ("C-c p" . projectile-command-map)
   ("s-p" . projectile-command-map))
+(use-package counsel-projectile
+  :after projectile
+  :demand t
+  :config
+  (counsel-projectile-mode))
 (use-package rainbow-delimiters
   :hook ((prog-mode latex-mode) . rainbow-delimiters-mode))
 (use-package flycheck
