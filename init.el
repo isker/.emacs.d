@@ -53,11 +53,15 @@
   :config
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+(use-package blackout)
 (use-package recentf
   :straight (:type built-in)
   :config
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (add-to-list 'recentf-exclude no-littering-etc-directory))
+(use-package auto-revert-mode
+  :straight (:type built-in)
+  :blackout t)
 (use-package ace-window
   :bind
   ("M-j" . ace-window))
@@ -79,6 +83,7 @@
   :bind
   ("C-;" . avy-goto-char-timer))
 (use-package company
+  :blackout t
   :hook (after-init . global-company-mode)
   :init
   ;; decrease delay before autocompletion popup shows
@@ -189,6 +194,9 @@
   :init
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (setq cider-prompt-for-symbol nil))
+(use-package eldoc
+  :straight (:type built-in)
+  :blackout t)
 (use-package helpful
   :config
   (defalias 'describe-key 'helpful-key)
@@ -290,6 +298,7 @@
 (use-package yaml-mode
   :mode "\\.yaml\\'")
 (use-package ivy
+  :blackout t
   :hook (after-init . ivy-mode)
   :init
   ;; ivy claims to do this for you but I've had no such luck.
@@ -344,6 +353,7 @@
 (use-package which-key
   :config (which-key-mode))
 (use-package yasnippet
+  :blackout 'yas-minor-mode ; TODO doesn't work?
   :config
   (yas-global-mode 1))
 ;; (use-package auctex
@@ -428,6 +438,7 @@
   (load-theme 'solarized-dark t))
 
 (use-package ws-butler
+  :blackout t
   :init (ws-butler-global-mode 1))
 
 (use-package org
