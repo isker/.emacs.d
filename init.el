@@ -365,7 +365,6 @@
 (use-package eshell
   :demand t
   :init
-  (setq eshell-visual-subcommands '(("comp" "build" "test")))
   (setq eshell-cmpl-cycle-completions nil)
   (setq eshell-history-size 100000)
   (defun eshell/in-term (prog &rest args)

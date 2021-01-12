@@ -4,6 +4,7 @@
  ("aggressive-indent-mode" . "b0ec0047aaae071ad1647159613166a253410a63")
  ("avy" . "bbf1e7339eba06784dfe86643bb0fbddf5bb0342")
  ("aweshell" . "23b0a1e8178e10142f6c985c4fd520caec6df1fb")
+ ("blackout" . "d99ab1aad84e4bd2bd4a499877764c213cce50ff")
  ("cargo.el" . "91ccfef6e36ff9e96352a03c4a057b5ee181438d")
  ("cider" . "f1c2a797291fd3d2a44cb32372852950d5ecf8a2")
  ("clj-refactor.el" . "6db85b37b57497b56d97d5e5512160e5db85f798")
