@@ -360,6 +360,7 @@
 (use-package counsel-tramp
   :bind (("C-c C-s . counsel-tramp")))
 (use-package which-key
+  :blackout t
   :config (which-key-mode))
 (use-package yasnippet
   :blackout 'yas-minor-mode ; TODO doesn't work?
