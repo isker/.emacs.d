@@ -43,6 +43,9 @@
 
 (setq gc-cons-threshold 20000000)
 
+;; As recommended by the lsp-mode docs
+(setq read-process-output-max (* 1024 1024))
+
 ;; use-package
 (straight-use-package 'use-package)
 
@@ -292,7 +295,8 @@
   ;; (advice-add 'lsp--server-binary-present? :before #'direnv--maybe-update-environment)
 )
 (use-package lsp-ui
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :init (setq lsp-ui-sideline-diagnostic-max-lines 10))
 (use-package lsp-ivy
   :commands ivy-lsp-workspace-symbol)
 (use-package flx)
