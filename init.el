@@ -267,7 +267,7 @@
   (exec-path-from-shell-initialize))
 (use-package elec-pair
   :straight (:type built-in)
-  :config (electric-pair-mode))
+  :hook (prog-mode . electric-pair-local-mode))
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :init
