@@ -341,6 +341,7 @@
   :bind (("M-x" . counsel-M-x)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
+         ("C-M-y" . counsel-yank-pop)
          ("C-x C-f" . counsel-find-file)
          :map counsel-find-file-map
          ("C-l" . counsel-up-directory)))
