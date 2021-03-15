@@ -148,6 +148,9 @@
   (counsel-projectile-mode))
 (use-package rainbow-delimiters
   :hook ((prog-mode latex-mode) . rainbow-delimiters-mode))
+(use-package auto-dim-other-buffers
+  :demand t
+  :config (auto-dim-other-buffers-mode t))
 (use-package flycheck
   :init
   (add-hook 'after-init-hook #'global-flycheck-mode)

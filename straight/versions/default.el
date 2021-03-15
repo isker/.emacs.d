@@ -2,6 +2,7 @@
  ("ace-window" . "c7cb315c14e36fded5ac4096e158497ae974bec9")
  ("adaptive-wrap" . "319db649fb083db3ad07b4c71ee6c9429497043b")
  ("aggressive-indent-mode" . "b0ec0047aaae071ad1647159613166a253410a63")
+ ("auto-dim-other-buffers.el" . "cad370fb6c9fc7186c2af221932e097af5900a2d")
  ("avy" . "bbf1e7339eba06784dfe86643bb0fbddf5bb0342")
  ("aweshell" . "23b0a1e8178e10142f6c985c4fd520caec6df1fb")
  ("blackout" . "d99ab1aad84e4bd2bd4a499877764c213cce50ff")
