@@ -43,6 +43,11 @@
 
 (setq gc-cons-threshold 20000000)
 
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'super)
+  (setq mac-pass-command-to-system nil))
+
 ;; As recommended by the lsp-mode docs
 (setq read-process-output-max (* 1024 1024))
 
