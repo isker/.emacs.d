@@ -379,6 +379,8 @@
   (define-key global-map [remap comment-dwim] 'comment-dwim-2))
 (use-package eshell
   :demand t
+  :hook
+  (eshell-mode . with-editor-export-editor)
   :init
   (setq eshell-cmpl-cycle-completions nil)
   (setq eshell-history-size 100000)
